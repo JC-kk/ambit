@@ -32,6 +32,16 @@ struct AgentInventoryView: View {
                                          title: section.kind.displayName.uppercased()) {
                                 Text("\(model.onCount(agent, in: section.kind))/\(section.rows.count)")
                                     .font(.counter)
+                                // Lined up with the switch column beneath it, same as the matrix.
+                                MasterSwitch(
+                                    state: model.bulkState(agent, in: section.kind),
+                                    agent: agent,
+                                    count: model.bulkCount(agent, in: section.kind),
+                                    noun: section.kind.displayName.lowercased()
+                                ) {
+                                    model.toggleAll(agent, in: section.kind)
+                                }
+                                .frame(width: Metrics.switchWidth, alignment: .leading)
                             }
                             .listRowInsets(EdgeInsets())
                         }

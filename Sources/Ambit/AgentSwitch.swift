@@ -121,6 +121,86 @@ struct AgentSwitch: View {
     }
 }
 
+/// The column's own switch: one control standing for every row beneath it.
+///
+/// Deliberately the same instrument at a different scale, sitting directly above the column it
+/// commands, and obeying the same colour rule: it is tinted only when the agent is actually loading
+/// something under it. That makes the heading itself a gauge — an empty column reads grey, a full
+/// one reads in the agent's colour — which is why it can take the agent mark's place and still say
+/// which column is whose.
+///
+/// The one departure is a third position. `mixed` puts the knob in the middle, the only place in
+/// this app where a middle knob is not a fault: here it means "some of these are on", and clicking
+/// fills the column rather than emptying it, the same rule as a half-checked checkbox.
+struct MasterSwitch: View {
+    let state: BulkState
+    let agent: AgentKind
+    /// How many rows this switch can actually move, for the tooltip.
+    let count: Int
+    let noun: String
+    let action: () -> Void
+
+    @State private var isHovering = false
+
+    private var isLive: Bool { state != .unavailable }
+    private var isFull: Bool { state == .allOn }
+    /// Grey until something under it is actually on — colour means agency here as everywhere else.
+    private var tint: Color { state == .allOn || state == .mixed ? agent.tint : .secondary }
+
+    var body: some View {
+        Button(action: action) {
+            track
+        }
+        .buttonStyle(.plain)
+        .disabled(!isLive)
+        .opacity(isLive ? 1 : 0.45)
+        .onHover { isHovering = $0 }
+        .help(helpText)
+        .accessibilityLabel("All \(noun) for \(agent.displayName)")
+    }
+
+    private var track: some View {
+        let knobDiameter = Metrics.trackHeight - Metrics.knobInset * 2
+
+        return Capsule()
+            .fill(isFull ? tint.opacity(0.24) : Color.primary.opacity(0.055))
+            .overlay {
+                Capsule().strokeBorder(tint.opacity(isFull ? 0.55 : 0.28), lineWidth: 1)
+            }
+            .overlay(alignment: alignment) {
+                Circle()
+                    .fill(tint.opacity(state == .allOn ? 1 : 0.7))
+                    .frame(width: knobDiameter, height: knobDiameter)
+                    .padding(Metrics.knobInset)
+            }
+            .frame(width: Metrics.trackWidth, height: Metrics.trackHeight)
+            .scaleEffect(isHovering && isLive ? 1.06 : 1)
+            .animation(.snappy(duration: 0.18), value: state)
+            .animation(.snappy(duration: 0.14), value: isHovering)
+    }
+
+    private var alignment: Alignment {
+        switch state {
+        case .allOn: .trailing
+        case .allOff, .unavailable: .leading
+        case .mixed: .center
+        }
+    }
+
+    private var helpText: String {
+        switch state {
+        case .unavailable:
+            "Nothing here can be switched for \(agent.displayName)."
+        case .allOn:
+            "Turn all \(count) \(noun) off for \(agent.displayName)."
+        case .allOff:
+            "Turn all \(count) \(noun) on for \(agent.displayName)."
+        case .mixed:
+            "Turn the remaining \(noun) on for \(agent.displayName) — \(count) in total."
+        }
+    }
+}
+
 /// The pair of switches as a fixed-width bank, so they read as columns down the list.
 struct SwitchBank: View {
     let capability: Capability

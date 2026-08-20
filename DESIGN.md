@@ -233,6 +233,19 @@ The window's agent column headings are a **pinned list section header** with an 
 background. Floating them above the list in a `VStack` looked identical at rest but let scrolled
 rows draw over the labels, because a translucent strip does not clip what passes beneath it.
 
+Each column heading carries a **master switch** (`MasterSwitch`) for everything beneath it. It took
+the agent mark's place there, which is a trade worth stating: the heading gave up a tile that was
+always coloured for a control that is coloured only when the column has something on. That obeys the
+colour rule instead of decorating around it, and it makes the heading a gauge — but it does mean the
+column's identity now rests on the word beside it, which is why the word stayed.
+
+It is the only control in the app with a third knob position. `mixed` sits in the centre, where a row
+switch would mean `BROKEN`; the two never collide because a master switch is always solid and a
+`BROKEN` knob is always red on a dashed track. Clicking a mixed column fills it, never empties it —
+the half-checked-checkbox rule, chosen so a single click cannot silently undo work. Rows the app does
+not govern are excluded from the aggregate rather than counted as off: including them would make a
+switch that can never read `allOn`, which is worse than not offering one.
+
 The sidebar navigates both axes of the same data. Picking a capability kind gives the
 capability × agent matrix; picking an agent gives `AgentInventoryView` — that agent's whole
 inventory grouped by kind, with only its own switch plus a dimmed read-out of the other agent, so

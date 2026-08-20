@@ -97,12 +97,23 @@ struct ContentView: View {
 
     /// Agent column headings, pinned inside the list. Floating them above it looked identical at
     /// rest but let scrolled rows draw over the labels.
+    ///
+    /// The agent mark gave its place up to the column's master switch. It is the better mark: it
+    /// carries the same tint, and it sits on top of the column it commands instead of merely
+    /// labelling it.
     private var columnHeadings: some View {
         SectionStrip(symbol: model.currentKind.symbolName, title: model.currentKind.displayName.uppercased()) {
             HStack(spacing: Metrics.switchGap) {
                 ForEach(AgentKind.allCases, id: \.self) { agent in
-                    HStack(spacing: 5) {
-                        AgentMark(agent: agent, size: 16)
+                    HStack(spacing: 8) {
+                        MasterSwitch(
+                            state: model.bulkState(agent, in: model.currentKind),
+                            agent: agent,
+                            count: model.bulkCount(agent, in: model.currentKind),
+                            noun: model.currentKind.displayName.lowercased()
+                        ) {
+                            model.toggleAll(agent, in: model.currentKind)
+                        }
                         Text(agent.displayName.uppercased())
                             .font(.eyebrow)
                             .tracking(1.1)

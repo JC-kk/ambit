@@ -100,6 +100,43 @@ public struct CapabilityStore: Sendable {
         }
     }
 
+    /// Applies one state to many capabilities, doing as much as it legitimately can.
+    ///
+    /// Returns the refusals in order rather than throwing on the first one: any real column is a
+    /// mix of rows we govern and rows we do not, and abandoning the batch at the first `N/A` would
+    /// leave the user worse off than not offering it. Already-correct rows are skipped, so nothing
+    /// is rewritten just to arrive at the state it was already in.
+    ///
+    /// `reportingSkips` is the difference between a master switch and a batch over hand-picked
+    /// rows. A master switch stands for a column the user never enumerated, so rows it cannot move
+    /// are simply not its business; an explicit selection is, and being told "these three were left
+    /// alone" is the whole point there.
+    @discardableResult
+    public func setAll(
+        _ enabled: Bool,
+        capabilities: [Capability],
+        agent: AgentKind,
+        reportingSkips: Bool = false
+    ) -> [String] {
+        var failures: [String] = []
+        for capability in capabilities {
+            let exposure = capability.exposure(agent)
+            guard exposure.canToggle else {
+                if reportingSkips {
+                    failures.append("\(capability.name): \(exposure.detail ?? "cannot be toggled")")
+                }
+                continue
+            }
+            guard (exposure.status == .on) != enabled else { continue }
+            do {
+                try setEnabled(enabled, capability: capability, agent: agent)
+            } catch {
+                failures.append("\(capability.name): \(error.localizedDescription)")
+            }
+        }
+        return failures
+    }
+
     public func canAdopt(_ capability: Capability) -> Bool {
         guard capability.librarySource == nil else { return false }
         switch capability.kind {

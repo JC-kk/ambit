@@ -3,6 +3,16 @@
 All notable changes to this project are documented here. This project follows
 [Semantic Versioning](https://semver.org/).
 
+## [1.1.0] — 2026-08-20
+
+### Added
+- A **master switch in every column heading**: one click turns all skills, all MCP servers or all
+  subagents on for one agent, and another turns them off. Reads the column back as all-on, all-off or
+  mixed, obeys the filter that is showing, and leaves rows this app does not govern alone instead of
+  counting them as off.
+- The same switch appears in each section heading of the per-agent view, so "everything Claude can
+  load" can be filled or emptied one kind at a time.
+
 ## [1.0.1] — 2026-08-20
 
 ### Fixed

@@ -59,7 +59,7 @@ Requires macOS 26.
 brew install --cask JC-kk/tap/ambit
 ```
 
-Or download `Ambit-1.0.1.dmg` from [Releases](../../releases) and drag Ambit to Applications.
+Or download `Ambit-1.1.0.dmg` from [Releases](../../releases) and drag Ambit to Applications.
 
 Then, either way:
 
@@ -153,6 +153,15 @@ The switch itself encodes whether you can do anything about it:
 | `N/A` | dashed | none |
 
 A dashed track always means clicking will not help, and the tooltip says why.
+
+**Every column has its own switch.** The heading above each agent's column is a master switch for
+everything under it: one click turns the whole kind on for that agent, another turns it off. It reads
+the column back — grey when nothing is on, the agent's colour when everything is, knob in the centre
+when only some are — and a centre knob *here* means "some", not broken, because a master switch is
+never dashed. Clicking a partly-on column fills it rather than emptying it, so one click never
+quietly undoes work. Rows this app does not govern are left out of the count and left alone: a forced-on
+skill or an `N/A` cell cannot stop the column reading full. If a filter is active the master switch
+acts on what the filter shows, never on rows the window is hiding.
 
 ## The five states
 

@@ -161,20 +161,33 @@ final class InventoryModel {
         let targets = visible.filter { selection.contains($0.id) }
         guard !targets.isEmpty else { return }
 
-        var failures: [String] = []
-        for capability in targets {
-            let exposure = capability.exposure(agent)
-            guard exposure.canToggle else {
-                failures.append("\(capability.name): \(exposure.detail ?? "cannot be toggled")")
-                continue
-            }
-            guard (exposure.status == .on) != enabled else { continue }
-            do {
-                try store.setEnabled(enabled, capability: capability, agent: agent)
-            } catch {
-                failures.append("\(capability.name): \(error.localizedDescription)")
-            }
-        }
+        apply(store.setAll(enabled, capabilities: targets, agent: agent, reportingSkips: true))
+    }
+
+    // MARK: - Whole-column switches
+
+    /// What a master switch stands for: the rows on screen, filter included. A control that also
+    /// moved rows the window is currently hiding would do more than the user can see it do.
+    func bulkRows(in kind: CapabilityKind) -> [Capability] { matching(inventory.of(kind)) }
+
+    func bulkState(_ agent: AgentKind, in kind: CapabilityKind) -> BulkState {
+        bulkRows(in: kind).bulkState(for: agent)
+    }
+
+    /// How many of those rows this app can actually move — what the tooltip promises.
+    func bulkCount(_ agent: AgentKind, in kind: CapabilityKind) -> Int {
+        bulkRows(in: kind).togglable(for: agent).count
+    }
+
+    /// Fills the column, or empties it once it is full. Same rule as a half-checked checkbox: a
+    /// mixed column goes on, never off, so one click never quietly undoes work.
+    func toggleAll(_ agent: AgentKind, in kind: CapabilityKind) {
+        let targets = bulkRows(in: kind)
+        let enabled = targets.bulkState(for: agent) != .allOn
+        apply(store.setAll(enabled, capabilities: targets, agent: agent))
+    }
+
+    private func apply(_ failures: [String]) {
         refresh()
         if !failures.isEmpty {
             alert = Alert(title: "Some items were left alone", message: failures.joined(separator: "\n\n"))
