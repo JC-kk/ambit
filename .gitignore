@@ -10,3 +10,4 @@ Resources/AppIcon.iconset/
 *.xcodeproj/
 *.xcworkspace/
 dist/
+promo/

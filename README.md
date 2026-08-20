@@ -4,29 +4,52 @@
 
 # Ambit
 
-**Which skills, MCP servers and subagents can Claude Code see? Which can Codex see?**
-One matrix, one switch each, and nothing gets deleted.
+**Every skill you keep installed pays rent in your context window — every turn, before you type
+anything.** Ambit is the switchboard.
 
 </div>
 
 ![The panel](docs/panel.png)
 
-<div align="center"><img src="docs/popover.png" width="330" alt="The menu bar popover"></div>
+## Why I built this
 
-Claude Code and Codex both load skills, MCP servers and subagents — from different directories, in
-different formats, with different rules about what counts as "installed". There is no single place to
-see what each one is actually loading, and no way to give something to one agent but not the other.
+I do a lot of SEO work with Claude Code, and that work fans out: a site audit spawns a dozen
+subagents at once, each with its own skill. So I ended up with 47 skills and 18 subagents installed.
 
-This is that place. It lives in the menu bar, it reads the truth off your filesystem every time, and
-turning something off means the agent stops finding it — never that a file got removed.
+Then I counted what they cost me. Every one of them has a name and a description, and those
+descriptions sit in the system prompt on *every turn*, so the model knows what it could reach for. On
+my machine that came to **roughly 4,800 tokens before I had typed a single character** — and most of
+it was for skills I was not going to touch that day.
 
-```
-Skills                     Claude     Codex
-  seo                        ON        ON
-  shopify                    ON        OFF
-  audio-research             OFF       ON
-  legacy-notes               EXTERNAL  OFF
-```
+Claude Code says as much itself, if you go looking in the binary:
+
+> *"loaded but never invoked. Each one adds to the system prompt every turn."*
+
+I like a clean context. I want the twenty things this afternoon needs, not the sixty-five things I
+own. But the only lever on offer was uninstalling, and I did not want to lose a skill just to stop it
+talking.
+
+So: keep everything in one place, and switch what each agent can *see*. That is the whole idea.
+
+## Why it needed writing
+
+It turned out to be more awkward than moving some files around, because Claude Code and Codex
+disagree about nearly everything:
+
+- They read from **different directories**, and Codex reads from one you probably do not know about.
+- A subagent is a markdown file with frontmatter to one and a TOML role file to the other. **The two
+  formats are not compatible.**
+- An MCP server is JSON in one place and TOML in another, and only one of them has an off switch.
+- "Installed" and "loaded" are the same thing along some of these paths and different along others.
+
+None of it is documented anywhere I could find, so I read the binaries and probed the CLIs until each
+mechanism was pinned down against a specific version. Those findings are the real substance of this
+project and they are all in [DESIGN.md](DESIGN.md).
+
+Ambit is a menu bar app in plain Swift — SwiftUI, no dependencies, no Rust, no Node, no network.
+About 2,700 lines of logic and 1,400 of interface. It was written for exactly one person's problem.
+If it happens to be yours as well, I would rather it got better: see
+[CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Install
 
@@ -68,8 +91,8 @@ Every release publishes `checksums.txt` so you can verify what you downloaded:
 shasum -a 256 -c checksums.txt
 ```
 
-Ambit makes no network requests at all — if you would rather not trust a binary, the whole thing is
-~2,700 lines of logic and ~1,400 of UI, and it builds in about ten seconds.
+Ambit makes no network requests at all — and if you would rather not trust a binary, the whole thing
+builds in about ten seconds.
 
 ### Build it yourself
 
@@ -97,6 +120,8 @@ Ambit --consolidate --yes    # carry it out
 ```
 
 ## Two ways to read the same thing
+
+<div align="center"><img src="docs/popover.png" width="330" alt="The menu bar popover"></div>
 
 The sidebar switches between the two axes:
 
@@ -167,8 +192,8 @@ are easy to get wrong:
 
 ## Safety
 
-This app edits files you cannot afford to lose, so the rules are narrow and enforced in the core
-rather than the UI:
+Ambit edits files you cannot afford to lose, so the rules are narrow and enforced in the core rather
+than the UI:
 
 - **Disabling never deletes a source.**
 - Removal requires proof of ownership: a symlink must resolve inside the library; a hard link must
@@ -211,8 +236,8 @@ will land outside it.
 ## What this deliberately is not
 
 No marketplace, no chat, no API keys, no usage dashboards, no cloud sync, no accounts, no background
-daemon. It is a local control panel for inventory and exposure. Anything that is not that belongs in
-a different app.
+daemon. It is a local control panel for inventory and exposure — that is what keeps it small enough
+to read in an afternoon. Anything that is not that belongs in a different app.
 
 ## Contributing
 
