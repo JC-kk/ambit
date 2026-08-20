@@ -1,6 +1,6 @@
 cask "ambit" do
-  version "1.0.0"
-  sha256 "fa15ef253ce2769bcc5e376d3d55061172e699a9e507dd71d439ca24c422db4a"
+  version "1.0.1"
+  sha256 "7cef7f0438f3b52a9062c0c81661da1483e65b94026abb85835d25b28d035d23"
 
   url "https://github.com/JC-kk/ambit/releases/download/v#{version}/Ambit-#{version}.dmg"
   name "Ambit"
