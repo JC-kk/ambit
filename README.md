@@ -47,15 +47,20 @@ xattr -dr com.apple.quarantine /Applications/Ambit.app
 ### Why that extra command
 
 Ambit is ad-hoc signed, not notarised. Notarisation needs a paid Apple Developer Program membership
-and this is a free tool, so macOS quarantines the download and refuses the first launch.
+and this is a free tool, so macOS marks the download as quarantined and may refuse to open it.
 
-That one line clears the quarantine flag and is the whole fix. It is needed after a `brew install`
-too — the flag comes from downloading the disk image, not from Homebrew, and brew copies the app out
-of the mounted volume without stripping it.
+That one line clears the flag. It applies after a `brew install` too — the flag comes from
+downloading the disk image, not from Homebrew, and brew copies the app out of the mounted volume
+without stripping it. (Measured: nine quarantine attributes on `/Applications/Ambit.app` after a
+clean cask install.)
 
-If you would rather not run it: open the app, let macOS block it, then go to **System Settings →
-Privacy & Security** and press **Open Anyway**. On macOS 15 and later the old Control-click → Open
-shortcut no longer works for unnotarised apps, so System Settings is the only route.
+If macOS blocks it anyway, go to **System Settings → Privacy & Security** and press **Open Anyway**.
+On macOS 15 and later the old Control-click → Open shortcut no longer works for unnotarised apps, so
+System Settings is the only route.
+
+`spctl --assess` will always report `rejected` for Ambit, before *and* after clearing quarantine.
+That is expected — it asks whether the app satisfies the notarisation policy, which an ad-hoc
+signature never can, and it is not the same question as whether the app will launch.
 
 Every release publishes `checksums.txt` so you can verify what you downloaded:
 
