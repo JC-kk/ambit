@@ -1,3 +1,4 @@
+import AppKit
 import SwiftUI
 import ACMCore
 
@@ -39,18 +40,41 @@ enum Metrics {
     static var compactSwitchWidth: CGFloat { compactTrackWidth + 5 + compactLabelWidth }
 }
 
+/// The machine-facing typeface.
+///
+/// SF Mono is a fine face, but it is *the* system face, and the single biggest reason an app reads as
+/// "an Apple app" is that every glyph on screen is Apple's. Swapping the machine layer to a
+/// distinctive mono changes the character of the whole interface without touching a single control —
+/// which is the point worth knowing: the ceiling here was never the framework.
+///
+/// Falls back to the system mono when the family is unavailable, so the app never renders in Helvetica
+/// on a machine that does not have it.
+enum Typeface {
+    /// JetBrains Mono, SIL OFL 1.1 — redistributable, so it ships inside the bundle.
+    static let monoFamily = "JetBrainsMonoNL Nerd Font"
+
+    static var hasMono: Bool {
+        NSFontManager.shared.availableFontFamilies.contains(monoFamily)
+    }
+
+    static func mono(_ size: CGFloat, _ weight: Font.Weight = .regular) -> Font {
+        guard hasMono else { return .system(size: size, weight: weight, design: .monospaced) }
+        return .custom(monoFamily, fixedSize: size).weight(weight)
+    }
+}
+
 extension Font {
     /// Capability names — identifiers, so mono.
-    static let identifier = Font.system(size: 12.5, weight: .medium, design: .monospaced)
-    static let identifierCompact = Font.system(size: 11, weight: .regular, design: .monospaced)
-    /// Human prose.
+    static let identifier = Typeface.mono(12.5, .medium)
+    static let identifierCompact = Typeface.mono(11)
+    /// Human prose stays in the system face: it is prose, not data.
     static let prose = Font.system(size: 11)
     /// Uppercase structural label.
-    static let eyebrow = Font.system(size: 9.5, weight: .semibold, design: .monospaced)
+    static let eyebrow = Typeface.mono(9.5, .semibold)
     /// Status words and counts.
-    static let status = Font.system(size: 9.5, weight: .semibold, design: .monospaced)
-    static let statusCompact = Font.system(size: 9, weight: .semibold, design: .monospaced)
-    static let counter = Font.system(size: 10.5, weight: .medium, design: .monospaced)
+    static let status = Typeface.mono(9.5, .semibold)
+    static let statusCompact = Typeface.mono(9, .semibold)
+    static let counter = Typeface.mono(10.5, .medium)
 }
 
 extension AgentKind {
