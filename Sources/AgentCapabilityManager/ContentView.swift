@@ -32,14 +32,14 @@ struct ContentView: View {
 
     private var sidebar: some View {
         List(selection: Binding(get: { model.sidebarSelection }, set: { model.sidebarSelection = $0 })) {
-            Section("Capabilities") {
+            Section {
                 ForEach(CapabilityKind.allCases, id: \.self) { kind in
                     Label {
                         HStack {
                             Text(kind.displayName)
                             Spacer()
                             Text("\(model.inventory.of(kind).count)")
-                                .font(.caption.monospacedDigit())
+                                .font(.counter)
                                 .foregroundStyle(.tertiary)
                         }
                     } icon: {
@@ -47,22 +47,27 @@ struct ContentView: View {
                     }
                     .tag(InventoryModel.SidebarItem.kind(kind))
                 }
+            } header: {
+                SidebarHeader("CAPABILITIES")
             }
 
             // Selectable: picking an agent shows everything that agent can load, across all kinds.
-            Section("Agents") {
+            Section {
                 ForEach(AgentKind.allCases, id: \.self) { agent in
                     HStack(spacing: 8) {
                         AgentMark(agent: agent, size: 18)
                         Text(agent.displayName)
                         Spacer()
                         Text("\(model.totalOnCount(agent))")
-                            .font(.caption.monospacedDigit())
+                            .font(.counter)
                             .foregroundStyle(agent.tint)
+                            .contentTransition(.numericText())
                     }
                     .padding(.vertical, 1)
                     .tag(InventoryModel.SidebarItem.agent(agent))
                 }
+            } header: {
+                SidebarHeader("AGENTS")
             }
         }
         .navigationSplitViewColumnWidth(min: 178, ideal: 196, max: 240)
@@ -98,11 +103,12 @@ struct ContentView: View {
                 ForEach(AgentKind.allCases, id: \.self) { agent in
                     HStack(spacing: 5) {
                         AgentMark(agent: agent, size: 16)
-                        Text(agent.displayName)
-                            .font(.system(size: 11, weight: .semibold))
+                        Text(agent.displayName.uppercased())
+                            .font(.eyebrow)
+                            .tracking(1.1)
                             .foregroundStyle(.secondary)
                     }
-                    .frame(width: Metrics.switchWidth)
+                    .frame(width: Metrics.switchWidth, alignment: .leading)
                 }
             }
         }
@@ -120,15 +126,15 @@ struct ContentView: View {
             List(selection: $model.selection) {
                 Section {
                     ForEach(model.rows) { capability in
-                        HStack(spacing: 12) {
+                        HStack(spacing: Metrics.rowSpacing) {
                             CapabilityLabel(capability: capability)
                                 .frame(maxWidth: .infinity, alignment: .leading)
                             SwitchBank(capability: capability, model: model)
                         }
                         .contentShape(.rect)
                         .contextMenu { RowMenu(capability: capability, model: model) }
-                        .listRowInsets(EdgeInsets(top: 5, leading: Metrics.gutter,
-                                                  bottom: 5, trailing: Metrics.gutter))
+                        .listRowInsets(EdgeInsets(top: 6, leading: Metrics.gutter,
+                                                  bottom: 6, trailing: Metrics.gutter))
                         .listRowSeparator(.hidden)
                     }
                 } header: {
@@ -146,7 +152,7 @@ struct ContentView: View {
     private var footer: some View {
         HStack(spacing: 10) {
             Text(model.selectionSummary)
-                .font(.system(size: 11))
+                .font(.prose)
                 .foregroundStyle(.secondary)
                 .contentTransition(.numericText())
 
@@ -154,7 +160,7 @@ struct ContentView: View {
 
             if !model.selection.isEmpty {
                 Text("Set to")
-                    .font(.system(size: 11))
+                    .font(.prose)
                     .foregroundStyle(.tertiary)
                 ForEach(model.batchAgents, id: \.self) { agent in
                     HStack(spacing: 4) {
@@ -165,11 +171,13 @@ struct ContentView: View {
                 }
             }
         }
-        .buttonStyle(.glass)
+        .buttonStyle(.bordered)
         .controlSize(.small)
         .padding(.horizontal, Metrics.gutter)
         .padding(.vertical, 9)
         .frame(minHeight: 38)
+        .background(.background.secondary)
+        .overlay(alignment: .top) { Rectangle().fill(Palette.rule).frame(height: 1) }
         .animation(.snappy(duration: 0.18), value: model.selection.isEmpty)
     }
 
@@ -205,6 +213,19 @@ struct ContentView: View {
 }
 
 // MARK: - Shared pieces
+
+/// Sidebar section label, in the same mono register as the rest of the structural layer.
+private struct SidebarHeader: View {
+    let title: String
+    init(_ title: String) { self.title = title }
+
+    var body: some View {
+        Text(title)
+            .font(.eyebrow)
+            .tracking(1.2)
+            .foregroundStyle(.tertiary)
+    }
+}
 
 struct RowMenu: View {
     let capability: Capability
@@ -243,7 +264,7 @@ private struct DiagnosticsCard: View {
                         .font(.system(size: 11))
                         .foregroundStyle(diagnostic.severity == .warning ? Palette.attention : .secondary)
                     Text(diagnostic.message)
-                        .font(.system(size: 11))
+                        .font(.prose)
                         .foregroundStyle(.secondary)
                         .fixedSize(horizontal: false, vertical: true)
                     Spacer(minLength: 0)
@@ -258,16 +279,16 @@ private struct DiagnosticsCard: View {
                         Button("Stop tracking the missing source", action: onDismiss)
                     }
                 }
-                .buttonStyle(.glass)
+                .buttonStyle(.bordered)
                 .controlSize(.small)
             }
         }
         .padding(12)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Palette.attention.opacity(0.09), in: .rect(cornerRadius: 10, style: .continuous))
+        .background(Palette.attention.opacity(0.10), in: .rect(cornerRadius: 8, style: .continuous))
         .overlay {
-            RoundedRectangle(cornerRadius: 10, style: .continuous)
-                .strokeBorder(Palette.attention.opacity(0.22), lineWidth: 0.8)
+            RoundedRectangle(cornerRadius: 8, style: .continuous)
+                .strokeBorder(Palette.attention.opacity(0.28), lineWidth: 1)
         }
         .padding(.horizontal, Metrics.gutter)
         .padding(.top, 10)

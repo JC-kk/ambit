@@ -1,45 +1,60 @@
 import SwiftUI
 import ACMCore
 
-/// One rule holds the whole interface together: **saturated colour means agency.**
+/// Two rules carry the whole interface.
 ///
-/// Clay is Claude, blue is Codex, and a control is tinted only when that agent is actually loading
-/// the thing. Everything structural stays graphite. So the amount of clay on screen reads directly
-/// as "how much Claude loads" without anyone having to parse a single label. Amber and red are the
-/// only other colours, and they mean attention rather than agency — something is here that this app
-/// did not put here, or something is broken.
+/// **Saturated colour means agency.** Clay is Claude, blue is Codex, and a control is coloured only
+/// when that agent is actually loading the thing. Amber and red are the only other colours and they
+/// mean attention, not agency. So the amount of clay on screen answers "how much is Claude loading"
+/// before anyone reads a word.
+///
+/// **Monospace means machine, sans means human.** Capability names *are* identifiers — `seo-technical`,
+/// `ffmpeg-video-editor` — so they are set in mono along with every count and status. Descriptions and
+/// explanations are prose and stay in the system face. The split is the app's whole subject: a bridge
+/// between machine config and human intent.
 enum Palette {
     static let claude = Color(red: 0.85, green: 0.47, blue: 0.34)
     static let codex = Color(red: 0.36, green: 0.58, blue: 0.98)
-    static let attention = Color.orange
-    static let fault = Color.red
+    static let attention = Color(red: 0.90, green: 0.62, blue: 0.24)
+    static let fault = Color(red: 0.87, green: 0.36, blue: 0.34)
+
+    /// Structural hairlines. Kept off `.separator` so the grid reads a touch quieter than a table.
+    static let rule = Color.primary.opacity(0.10)
 }
 
 enum Metrics {
-    /// Row gutter. Everything in the detail pane lines up on this.
     static let gutter: CGFloat = 18
-    /// One agent's switch. Fixed so the switches read as columns down the list.
-    static let switchWidth: CGFloat = 86
-    static let switchHeight: CGFloat = 25
-    static let switchGap: CGFloat = 10
-    static let compactSwitchWidth: CGFloat = 62
-    static let compactSwitchHeight: CGFloat = 21
+    static let rowSpacing: CGFloat = 12
+
+    /// The switch itself, then the mono status word beside it.
+    static let trackWidth: CGFloat = 30
+    static let trackHeight: CGFloat = 17
+    static let statusLabelWidth: CGFloat = 62
+    static let switchGap: CGFloat = 14
+    static var switchWidth: CGFloat { trackWidth + 7 + statusLabelWidth }
+
+    static let compactTrackWidth: CGFloat = 24
+    static let compactTrackHeight: CGFloat = 14
+    static let compactLabelWidth: CGFloat = 44
+    static var compactSwitchWidth: CGFloat { compactTrackWidth + 5 + compactLabelWidth }
 }
 
 extension Font {
-    /// Row title.
-    static let rowTitle = Font.system(size: 13, weight: .medium)
-    /// Row detail — 11pt is the macOS caption size; 10 was below it and read as an afterthought.
-    static let rowDetail = Font.system(size: 11)
-    /// Uppercase section label.
-    static let eyebrow = Font.system(size: 10, weight: .semibold)
-    static let pill = Font.system(size: 10, weight: .semibold, design: .rounded)
-    static let pillCompact = Font.system(size: 9, weight: .semibold, design: .rounded)
+    /// Capability names — identifiers, so mono.
+    static let identifier = Font.system(size: 12.5, weight: .medium, design: .monospaced)
+    static let identifierCompact = Font.system(size: 11, weight: .regular, design: .monospaced)
+    /// Human prose.
+    static let prose = Font.system(size: 11)
+    /// Uppercase structural label.
+    static let eyebrow = Font.system(size: 9.5, weight: .semibold, design: .monospaced)
+    /// Status words and counts.
+    static let status = Font.system(size: 9.5, weight: .semibold, design: .monospaced)
+    static let statusCompact = Font.system(size: 9, weight: .semibold, design: .monospaced)
+    static let counter = Font.system(size: 10.5, weight: .medium, design: .monospaced)
 }
 
 extension AgentKind {
-    /// Our own marks. Anthropic's and OpenAI's logos are trademarks we have no licence to redraw,
-    /// and a wrong-looking copy would read worse than an honest glyph anyway.
+    /// Our own marks. Anthropic's and OpenAI's logos are trademarks we have no licence to redraw.
     var symbolName: String {
         switch self {
         case .claude: "sparkle"
@@ -66,33 +81,36 @@ extension CapabilityKind {
 }
 
 extension ExposureStatus {
-    /// `nil` means "take the agent's tint" — the only place agency colour comes from.
-    var fixedTint: Color? {
+    /// Where the knob sits. `nil` means there is no knob to draw.
+    enum KnobPosition { case leading, trailing, middle }
+
+    var knob: KnobPosition? {
         switch self {
-        case .on: nil
-        case .off: nil
-        case .external: Palette.attention
-        case .broken: Palette.fault
+        case .on: .trailing
+        case .off: .leading
+        case .external: .trailing   // it is on — just not by our hand
+        case .broken: .middle
         case .unsupported: nil
         }
     }
 
-    func tint(for agent: AgentKind) -> Color {
-        fixedTint ?? (self == .on ? agent.tint : .secondary)
-    }
-
-    var symbolName: String {
+    /// A dashed track means this app does not control the switch. Solid means it does.
+    var isGoverned: Bool {
         switch self {
-        case .on: "checkmark"
-        case .off: "circle"
-        case .external: "link"
-        case .broken: "exclamationmark.triangle.fill"
-        case .unsupported: "minus"
+        case .on, .off: true
+        case .external, .broken, .unsupported: false
         }
     }
 
-    /// Only ON is filled. Everything else is an outline, so a glance down a column counts loads.
-    var isFilled: Bool { self == .on }
+    func tint(for agent: AgentKind) -> Color {
+        switch self {
+        case .on: agent.tint
+        case .off: .secondary
+        case .external: Palette.attention
+        case .broken: Palette.fault
+        case .unsupported: .secondary
+        }
+    }
 }
 
 /// A small tinted tile carrying an agent's glyph.
@@ -101,15 +119,15 @@ struct AgentMark: View {
     var size: CGFloat = 20
 
     var body: some View {
-        RoundedRectangle(cornerRadius: size * 0.30, style: .continuous)
-            .fill(agent.tint.opacity(0.20))
+        RoundedRectangle(cornerRadius: size * 0.28, style: .continuous)
+            .fill(agent.tint.opacity(0.18))
             .overlay {
-                RoundedRectangle(cornerRadius: size * 0.30, style: .continuous)
-                    .strokeBorder(agent.tint.opacity(0.40), lineWidth: 0.8)
+                RoundedRectangle(cornerRadius: size * 0.28, style: .continuous)
+                    .strokeBorder(agent.tint.opacity(0.42), lineWidth: 0.8)
             }
             .overlay {
                 Image(systemName: agent.symbolName)
-                    .font(.system(size: size * 0.50, weight: .semibold))
+                    .font(.system(size: size * 0.48, weight: .semibold))
                     .foregroundStyle(agent.tint)
             }
             .frame(width: size, height: size)
@@ -117,12 +135,11 @@ struct AgentMark: View {
     }
 }
 
-/// An uppercase label strip. Opaque on purpose — a translucent strip lets scrolled rows bleed
-/// through it, which is exactly the overlap this replaced.
+/// An uppercase label strip. Solid rather than glass: content sits under it when scrolled, and a
+/// translucent strip lets rows bleed through.
 struct SectionStrip<Trailing: View>: View {
     var symbol: String?
     var title: String
-    var indent: CGFloat = Metrics.gutter
     @ViewBuilder var trailing: () -> Trailing
 
     var body: some View {
@@ -132,16 +149,27 @@ struct SectionStrip<Trailing: View>: View {
             }
             Text(title)
                 .font(.eyebrow)
-                .tracking(0.6)
+                .tracking(1.1)
             Spacer(minLength: 8)
             trailing()
         }
         .foregroundStyle(.tertiary)
-        .padding(.vertical, 6)
-        .padding(.horizontal, indent)
+        .padding(.vertical, 7)
+        .padding(.horizontal, Metrics.gutter)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(.bar)
-        .overlay(alignment: .bottom) { Divider().opacity(0.5) }
+        .background(.background.secondary)
+        .overlay(alignment: .bottom) { Rectangle().fill(Palette.rule).frame(height: 1) }
+    }
+}
+
+/// A hairline running from the end of a name to the switch bank. In a matrix this is the device that
+/// lets the eye travel along a row without losing it — the same reason a table of contents has one.
+struct LeaderRule: View {
+    var body: some View {
+        Rectangle()
+            .fill(Palette.rule)
+            .frame(height: 1)
+            .padding(.leading, 8)
     }
 }
 

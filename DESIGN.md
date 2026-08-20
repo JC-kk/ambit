@@ -209,7 +209,23 @@ no-op. `--consolidate` prints the plan; `--consolidate --yes` carries it out.
 
 ## 7. UI
 
-macOS 26 Liquid Glass, deployment target 26.0. `NavigationSplitView` with a sidebar for the three
+Deployment target 26.0. Liquid Glass is left to the window and toolbar chrome, where the system
+puts it anyway — an earlier pass applied `glassEffect` to every control in the content and the result
+read as an effect rather than an instrument.
+
+The identity comes from two rules instead, both derived from the subject rather than applied to it.
+**Saturated colour means agency**: clay for Claude, blue for Codex, coloured only when that agent is
+actually loading the capability, with amber and red reserved for attention. **Monospace means
+machine**: capability names are literally slugs, so they and every count and status are set in
+SF Mono, while descriptions stay in the system face — the split is the app's own subject, a bridge
+between machine config and human intent.
+
+The signature element is the switch, which shares the app icon's motif and encodes governance in its
+border: a solid track means this app controls it, a dashed track means it does not and clicking will
+never help. Knob position gives on/off, colour gives agency. That replaced a text pill, which needed
+a legend the switch does not.
+
+ `NavigationSplitView` with a sidebar for the three
 capability kinds and a live per-agent ON count; `.searchable` in the toolbar; the matrix rows use
 `glassEffect(_:in: .capsule)` tinted by agent, inside a `GlassEffectContainer`.
 

@@ -65,9 +65,9 @@ struct ConsolidationSheet: View {
                             ForEach(moves) { move in
                                 HStack(spacing: 8) {
                                     VStack(alignment: .leading, spacing: 1) {
-                                        Text(move.name).font(.system(size: 12, weight: .medium))
+                                        Text(move.name).font(.identifier)
                                         Text(move.source.path.abbreviatingHomeForDisplay)
-                                            .font(.system(size: 10))
+                                            .font(.system(size: 10, design: .monospaced))
                                             .foregroundStyle(.tertiary)
                                             .lineLimit(1)
                                             .truncationMode(.head)
@@ -112,7 +112,7 @@ struct ConsolidationSheet: View {
                 model.applyConsolidation()
                 dismiss()
             }
-            .buttonStyle(.glassProminent)
+            .buttonStyle(.borderedProminent)
             .keyboardShortcut(.defaultAction)
             .disabled(plan.isEmpty)
         }

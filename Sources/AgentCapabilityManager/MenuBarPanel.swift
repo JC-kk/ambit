@@ -64,14 +64,15 @@ struct MenuBarPanel: View {
                 }
                 .padding(.horizontal, 8)
                 .padding(.vertical, 5)
-                .background(.quaternary.opacity(0.5), in: .capsule)
+                .background(Color.primary.opacity(0.06), in: .capsule)
+                .overlay { Capsule().strokeBorder(Palette.rule, lineWidth: 1) }
 
                 // Live count per agent for the kind on screen: the popover's whole reason to exist.
                 ForEach(AgentKind.allCases, id: \.self) { agent in
                     HStack(spacing: 3) {
                         AgentMark(agent: agent, size: 14)
                         Text("\(model.onCount(agent))")
-                            .font(.system(size: 11, weight: .semibold).monospacedDigit())
+                            .font(.counter)
                             .foregroundStyle(agent.tint)
                             .contentTransition(.numericText())
                     }
@@ -100,7 +101,7 @@ struct MenuBarPanel: View {
         }
         .padding(.horizontal, 12)
         .padding(.vertical, 7)
-        .background(Palette.attention.opacity(0.09))
+        .background(Palette.attention.opacity(0.10))
     }
 
     // MARK: - Rows
@@ -123,15 +124,16 @@ struct MenuBarPanel: View {
                     ForEach(model.rows) { capability in
                         HStack(spacing: 8) {
                             Text(capability.name)
-                                .font(.system(size: 11.5))
+                                .font(.identifierCompact)
                                 .lineLimit(1)
                                 .truncationMode(.middle)
-                                .frame(maxWidth: .infinity, alignment: .leading)
+                            LeaderRule()
                             ForEach(AgentKind.allCases, id: \.self) { agent in
-                                StatusCell(exposure: capability.exposure(agent),
-                                           agent: agent, size: .compact) {
+                                AgentSwitch(exposure: capability.exposure(agent),
+                                            agent: agent, size: .compact) {
                                     model.toggle(capability, agent: agent)
                                 }
+                                .frame(width: Metrics.compactSwitchWidth, alignment: .leading)
                             }
                         }
                         .padding(.horizontal, 12)
@@ -164,12 +166,12 @@ struct MenuBarPanel: View {
             Spacer()
 
             Text("v\(Self.version)")
-                .font(.system(size: 10).monospacedDigit())
+                .font(.system(size: 10, design: .monospaced))
                 .foregroundStyle(.tertiary)
 
             Button("Quit") { NSApplication.shared.terminate(nil) }
         }
-        .buttonStyle(.glass)
+        .buttonStyle(.bordered)
         .controlSize(.small)
         .padding(.horizontal, 12)
         .padding(.vertical, 10)

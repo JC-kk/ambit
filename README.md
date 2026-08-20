@@ -63,9 +63,30 @@ The sidebar switches between the two axes:
 - **Claude / Codex** — that agent's whole inventory across all three kinds, with just its own switch
   and a dimmed note of what the other agent is doing. *What is this agent loading right now?*
 
-Saturated colour only ever means agency: clay is Claude, blue is Codex, and a switch is filled only
-when that agent is really loading the thing. So the amount of clay on screen is the answer to "how
-much is Claude loading" without reading a word.
+## Reading the interface
+
+Two rules carry the whole thing.
+
+**Saturated colour means agency.** Clay is Claude, blue is Codex, and a switch is coloured only when
+that agent is really loading the thing. Amber and red are the only other colours and they mean
+attention, not agency. So the amount of clay on screen answers "how much is Claude loading" before
+you read a word.
+
+**Monospace means machine, sans means human.** Capability names *are* identifiers —
+`ffmpeg-video-editor`, `seo-technical` — so they are set in mono along with every count and status.
+Descriptions and explanations are prose and stay in the system face.
+
+The switch itself encodes whether you can do anything about it:
+
+| | track | knob |
+|---|---|---|
+| `ON` | solid | right, agent colour |
+| `OFF` | solid | left |
+| `EXTERNAL` | **dashed** — this app does not govern it | right, amber |
+| `BROKEN` | dashed | centre, red |
+| `N/A` | dashed | none |
+
+A dashed track always means clicking will not help, and the tooltip says why.
 
 ## The five states
 
