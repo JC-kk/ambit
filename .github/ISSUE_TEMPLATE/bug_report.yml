@@ -1,0 +1,39 @@
+name: Bug report
+description: Something behaved differently than the interface said it would
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        This app edits your Claude Code and Codex configuration, so please include the versions —
+        the exposure mechanisms differ between releases and that is usually the answer.
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: What you did, what you expected, what you got.
+    validations:
+      required: true
+  - type: input
+    id: versions
+    attributes:
+      label: Versions
+      description: "Output of: sw_vers -productVersion; claude --version; codex --version"
+      placeholder: "macOS 26.0 · claude 2.1.234 · codex 0.147.0"
+    validations:
+      required: true
+  - type: textarea
+    id: matrix
+    attributes:
+      label: Matrix output
+      description: |
+        Run this and paste the result. It is read-only and prints no file contents.
+        `/Applications/AgentCapabilityManager.app/Contents/MacOS/AgentCapabilityManager --print`
+      render: text
+  - type: checkboxes
+    id: safety
+    attributes:
+      label: Before you post
+      options:
+        - label: I have removed anything private from the paths above
+          required: true

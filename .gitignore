@@ -1,0 +1,11 @@
+# Build output
+.build/
+AgentCapabilityManager.app/
+Resources/AppIcon.iconset/
+
+# macOS
+.DS_Store
+
+# Xcode
+*.xcodeproj/
+*.xcworkspace/

@@ -1,0 +1,26 @@
+name: Agent or mechanism changed
+description: Claude Code or Codex changed where or how it discovers a capability
+labels: [mechanism]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Every discovery mechanism in this app was verified against a specific CLI version, not
+        guessed. If one has changed, the fix needs the same standard of evidence.
+  - type: input
+    id: version
+    attributes:
+      label: Agent and version
+      placeholder: "codex 0.152.0"
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence
+      description: |
+        How did you confirm it? For example a `codex doctor` row, a `codex debug prompt-input`
+        excerpt, or a Claude Code `/skills` screenshot. Please avoid "I think" — the previous
+        mechanisms were all pinned down with a reproducible probe.
+    validations:
+      required: true

@@ -1,0 +1,35 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    # macOS 26 SDK: the UI target uses Liquid Glass, so an older image will not compile.
+    runs-on: macos-26
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Show toolchain
+        run: swift --version
+
+      # ACMCore is pure Foundation and holds every mechanism worth testing. The tests run entirely
+      # inside temporary fixture trees and never touch a real ~/.claude or ~/.codex.
+      - name: Test
+        run: swift test --scratch-path "$RUNNER_TEMP/build"
+
+      - name: Build app bundle
+        run: ACM_SCRATCH="$RUNNER_TEMP/build" ./build.sh
+
+      - name: Smoke test the CLI surface
+        run: |
+          FIXTURE="$RUNNER_TEMP/fixture"
+          mkdir -p "$FIXTURE"
+          ACM_HOME="$FIXTURE" ./AgentCapabilityManager.app/Contents/MacOS/AgentCapabilityManager --print
+          ACM_HOME="$FIXTURE" ./AgentCapabilityManager.app/Contents/MacOS/AgentCapabilityManager --consolidate

@@ -1,0 +1,66 @@
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Tag to release"
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: macos-26
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Test
+        run: swift test --scratch-path "$RUNNER_TEMP/build"
+
+      - name: Build app bundle
+        run: ACM_SCRATCH="$RUNNER_TEMP/build" ./build.sh
+
+      # Optional. Without these secrets the app is ad-hoc signed, and first launch needs
+      # right-click → Open. See docs/RELEASING.md for how to set them up.
+      - name: Sign and notarize
+        if: ${{ secrets.MACOS_CERTIFICATE != '' }}
+        env:
+          MACOS_CERTIFICATE: ${{ secrets.MACOS_CERTIFICATE }}
+          MACOS_CERTIFICATE_PASSWORD: ${{ secrets.MACOS_CERTIFICATE_PASSWORD }}
+          MACOS_SIGNING_IDENTITY: ${{ secrets.MACOS_SIGNING_IDENTITY }}
+          NOTARY_APPLE_ID: ${{ secrets.NOTARY_APPLE_ID }}
+          NOTARY_TEAM_ID: ${{ secrets.NOTARY_TEAM_ID }}
+          NOTARY_PASSWORD: ${{ secrets.NOTARY_PASSWORD }}
+        run: ./scripts/sign_and_notarize.sh AgentCapabilityManager.app
+
+      - name: Package
+        id: package
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          [ -n "${{ inputs.tag }}" ] && VERSION="${{ inputs.tag }}"
+          VERSION="${VERSION#v}"
+          STAGE="$RUNNER_TEMP/dmg"
+          mkdir -p "$STAGE"
+          cp -R AgentCapabilityManager.app "$STAGE/"
+          ln -s /Applications "$STAGE/Applications"
+          DMG="AgentCapabilities-$VERSION.dmg"
+          hdiutil create -volname "Agent Capabilities" -srcfolder "$STAGE" -ov -format UDZO "$DMG"
+          ZIP="AgentCapabilities-$VERSION.zip"
+          ditto -c -k --keepParent AgentCapabilityManager.app "$ZIP"
+          shasum -a 256 "$DMG" "$ZIP" > checksums.txt
+          cat checksums.txt
+          echo "dmg=$DMG" >> "$GITHUB_OUTPUT"
+          echo "zip=$ZIP" >> "$GITHUB_OUTPUT"
+
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            ${{ steps.package.outputs.dmg }}
+            ${{ steps.package.outputs.zip }}
+            checksums.txt
+          body_path: CHANGELOG.md
+          draft: true

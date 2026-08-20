@@ -1,0 +1,40 @@
+# Changelog
+
+All notable changes to this project are documented here. This project follows
+[Semantic Versioning](https://semver.org/).
+
+## [1.0.0] — 2026-08-20
+
+First release.
+
+### Added
+- Capability × agent matrix for **Skills**, **MCP servers** and **Subagents** across Claude Code and
+  OpenAI Codex, with an independent switch per agent.
+- Per-agent view: everything one agent can load, grouped by kind, with a read-only note of what the
+  other agent is doing.
+- Menu bar item with a compact popover, plus the full desktop panel on demand.
+- **Consolidate**: moves every remaining source into `~/.agent-capabilities` and links it back, so
+  the switches become independent without changing what either agent can see.
+- Five honest states — `ON`, `OFF`, `EXTERNAL`, `BROKEN`, `N/A` — all derived from the filesystem and
+  the agents' own config files on every scan.
+- Missing-source detection: if a library source is deleted by something else, the app says so
+  instead of quietly dropping it from the list.
+- `--print` and `--consolidate [--yes]` for scripting; `--panel` to open the desktop panel directly.
+- `ACM_HOME` to point the whole app at a throwaway tree.
+
+### Mechanisms
+- Skills are exposed by per-skill symlink into `~/.claude/skills` and `~/.codex/skills`.
+- Claude subagents use **hard links**, because Claude Code's agent scanner skips symlinked `.md`.
+- Codex subagents are declared as `[agents.<name>]` in `config.toml` pointing at a role file; the
+  Claude `.md` is converted when Codex is switched on.
+- Claude MCP servers are parked verbatim in the library when off; Codex MCP servers use the native
+  `enabled` key.
+
+### Safety
+- Disabling never deletes a source.
+- Removal requires proof of ownership: a symlink must resolve inside the library, a hard link must
+  share the library file's inode and not be the last link to its data.
+- JSON configs are edited as **text**, splicing one top-level key, so key order, indentation and
+  float formatting are preserved byte for byte.
+- TOML edits change a single key or table and leave comments, ordering and unknown keys intact.
+- Every config write is backup → parse → minimal edit → validate → atomic rename.
