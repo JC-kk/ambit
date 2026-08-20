@@ -11,6 +11,8 @@ One matrix, one switch each, and nothing gets deleted.
 
 ![The panel](docs/panel.png)
 
+<div align="center"><img src="docs/popover.png" width="330" alt="The menu bar popover"></div>
+
 Claude Code and Codex both load skills, MCP servers and subagents — from different directories, in
 different formats, with different rules about what counts as "installed". There is no single place to
 see what each one is actually loading, and no way to give something to one agent but not the other.

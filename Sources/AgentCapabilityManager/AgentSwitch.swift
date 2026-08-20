@@ -23,11 +23,11 @@ struct AgentSwitch: View {
         var knobInset: CGFloat {
             self == .regular ? Metrics.knobInset : Metrics.compactKnobInset
         }
-        var labelWidth: CGFloat {
-            self == .regular ? Metrics.statusLabelWidth : Metrics.compactLabelWidth
-        }
-        var gap: CGFloat { self == .regular ? 8 : 6 }
+        var labelWidth: CGFloat { Metrics.statusLabelWidth }
+        var gap: CGFloat { self == .regular ? 8 : 4 }
         var font: Font { self == .regular ? .status : .statusCompact }
+        /// The popover reads the switch itself; only the panel spells the state out.
+        var spellsOutState: Bool { self == .regular }
     }
 
     let exposure: AgentExposure
@@ -45,12 +45,24 @@ struct AgentSwitch: View {
         Button(action: action) {
             HStack(spacing: size.gap) {
                 track
-                Text(status.label)
-                    .font(size.font)
-                    .tracking(0.5)
-                    .foregroundStyle(status == .off || status == .unsupported
-                                     ? AnyShapeStyle(.tertiary) : AnyShapeStyle(tint))
-                    .frame(width: size.labelWidth, alignment: .leading)
+                if size.spellsOutState {
+                    Text(status.label)
+                        .font(size.font)
+                        .tracking(0.5)
+                        .foregroundStyle(status == .off || status == .unsupported
+                                         ? AnyShapeStyle(.tertiary) : AnyShapeStyle(tint))
+                        .frame(width: size.labelWidth, alignment: .leading)
+                } else {
+                    // Fixed slot either way, so the switch columns line up down the list.
+                    Group {
+                        if let glyph = status.attentionGlyph {
+                            Image(systemName: glyph)
+                                .font(.system(size: 9, weight: .semibold))
+                                .foregroundStyle(tint)
+                        }
+                    }
+                    .frame(width: Metrics.compactGlyphSlot)
+                }
             }
         }
         .buttonStyle(.plain)

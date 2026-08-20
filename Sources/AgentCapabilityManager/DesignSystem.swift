@@ -39,11 +39,14 @@ enum Metrics {
     static let switchGap: CGFloat = 14
     static var switchWidth: CGFloat { trackWidth + 8 + statusLabelWidth }
 
+    /// The popover drops the status word: the switch already says on or off by knob position and
+    /// colour, so spelling it out again cost 100pt that the identifiers needed. Only the states that
+    /// need explaining keep a marker, and it is a glyph in a fixed slot so the columns stay aligned.
     static let compactTrackWidth: CGFloat = 27
     static let compactTrackHeight: CGFloat = 15
     static let compactKnobInset: CGFloat = 2.5
-    static let compactLabelWidth: CGFloat = 50
-    static var compactSwitchWidth: CGFloat { compactTrackWidth + 6 + compactLabelWidth }
+    static let compactGlyphSlot: CGFloat = 14
+    static var compactSwitchWidth: CGFloat { compactTrackWidth + 4 + compactGlyphSlot }
 }
 
 /// The machine-facing typeface.
@@ -121,6 +124,17 @@ extension ExposureStatus {
         case .external: .trailing   // it is on — just not by our hand
         case .broken: .middle
         case .unsupported: nil
+        }
+    }
+
+    /// Shown where there is no room to spell the state out. `nil` for on and off — the switch has
+    /// already said those, and repeating them is what crowded out the identifiers.
+    var attentionGlyph: String? {
+        switch self {
+        case .on, .off: nil
+        case .external: "link"
+        case .broken: "exclamationmark.triangle.fill"
+        case .unsupported: "minus"
         }
     }
 
