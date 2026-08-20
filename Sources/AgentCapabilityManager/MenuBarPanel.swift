@@ -25,7 +25,7 @@ struct MenuBarPanel: View {
             Divider()
             footer
         }
-        .frame(width: 348)
+        .frame(width: 372)
         .frame(minHeight: 320, maxHeight: 520)
     }
 
@@ -68,14 +68,16 @@ struct MenuBarPanel: View {
                 .overlay { Capsule().strokeBorder(Palette.rule, lineWidth: 1) }
 
                 // Live count per agent for the kind on screen: the popover's whole reason to exist.
+                // Aligned to the switch columns below so the eye maps count to column.
                 ForEach(AgentKind.allCases, id: \.self) { agent in
-                    HStack(spacing: 3) {
+                    HStack(spacing: 4) {
                         AgentMark(agent: agent, size: 14)
                         Text("\(model.onCount(agent))")
                             .font(.counter)
                             .foregroundStyle(agent.tint)
                             .contentTransition(.numericText())
                     }
+                    .frame(width: Metrics.compactSwitchWidth, alignment: .leading)
                     .help("\(agent.displayName) loads \(model.onCount(agent)) of these")
                 }
             }
@@ -137,7 +139,7 @@ struct MenuBarPanel: View {
                             }
                         }
                         .padding(.horizontal, 12)
-                        .padding(.vertical, 3)
+                        .padding(.vertical, 3.5)
                         .help(capability.summary ?? capability.name)
                     }
                 }

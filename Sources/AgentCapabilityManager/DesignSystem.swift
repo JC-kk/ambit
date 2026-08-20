@@ -28,16 +28,22 @@ enum Metrics {
     static let rowSpacing: CGFloat = 12
 
     /// The switch itself, then the mono status word beside it.
-    static let trackWidth: CGFloat = 30
-    static let trackHeight: CGFloat = 17
+    ///
+    /// `knobInset` is the gap between the knob and the inside of the track, and it is applied as
+    /// padding rather than computed into an offset — that way the clearance is guaranteed by the
+    /// layout instead of by arithmetic that can land the knob exactly on the border.
+    static let trackWidth: CGFloat = 33
+    static let trackHeight: CGFloat = 18
+    static let knobInset: CGFloat = 3
     static let statusLabelWidth: CGFloat = 62
     static let switchGap: CGFloat = 14
-    static var switchWidth: CGFloat { trackWidth + 7 + statusLabelWidth }
+    static var switchWidth: CGFloat { trackWidth + 8 + statusLabelWidth }
 
-    static let compactTrackWidth: CGFloat = 24
-    static let compactTrackHeight: CGFloat = 14
-    static let compactLabelWidth: CGFloat = 44
-    static var compactSwitchWidth: CGFloat { compactTrackWidth + 5 + compactLabelWidth }
+    static let compactTrackWidth: CGFloat = 27
+    static let compactTrackHeight: CGFloat = 15
+    static let compactKnobInset: CGFloat = 2.5
+    static let compactLabelWidth: CGFloat = 50
+    static var compactSwitchWidth: CGFloat { compactTrackWidth + 6 + compactLabelWidth }
 }
 
 /// The machine-facing typeface.

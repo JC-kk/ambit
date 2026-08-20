@@ -19,10 +19,14 @@ struct AgentSwitch: View {
                 ? CGSize(width: Metrics.trackWidth, height: Metrics.trackHeight)
                 : CGSize(width: Metrics.compactTrackWidth, height: Metrics.compactTrackHeight)
         }
+        /// Clearance between the knob and the inside of the track, on every side.
+        var knobInset: CGFloat {
+            self == .regular ? Metrics.knobInset : Metrics.compactKnobInset
+        }
         var labelWidth: CGFloat {
             self == .regular ? Metrics.statusLabelWidth : Metrics.compactLabelWidth
         }
-        var gap: CGFloat { self == .regular ? 7 : 5 }
+        var gap: CGFloat { self == .regular ? 8 : 6 }
         var font: Font { self == .regular ? .status : .statusCompact }
     }
 
@@ -58,42 +62,39 @@ struct AgentSwitch: View {
     }
 
     private var track: some View {
-        let size = self.size.track
-        let radius = size.height / 2
-        let knobDiameter = size.height - 5
+        let track = size.track
+        let inset = size.knobInset
+        let knobDiameter = track.height - inset * 2
 
-        return ZStack {
-            Capsule()
-                .fill(status == .on ? tint.opacity(0.24) : Color.primary.opacity(0.055))
-
-            Capsule()
-                .strokeBorder(
+        return Capsule()
+            .fill(status == .on ? tint.opacity(0.24) : Color.primary.opacity(0.055))
+            .overlay {
+                Capsule().strokeBorder(
                     tint.opacity(status == .on ? 0.55 : 0.28),
-                    style: StrokeStyle(
-                        lineWidth: 1,
-                        dash: status.isGoverned ? [] : [2.2, 2.2]
-                    )
+                    style: StrokeStyle(lineWidth: 1, dash: status.isGoverned ? [] : [2.2, 2.2])
                 )
-
-            if let knob = status.knob {
-                Circle()
-                    .fill(tint.opacity(status == .off ? 0.55 : 1))
-                    .frame(width: knobDiameter, height: knobDiameter)
-                    .offset(x: offset(for: knob, in: size, radius: radius))
             }
-        }
-        .frame(width: size.width, height: size.height)
-        .scaleEffect(isHovering && isLive ? 1.06 : 1)
-        .animation(.snappy(duration: 0.18), value: status)
-        .animation(.snappy(duration: 0.14), value: isHovering)
+            // Positioned by padding, so the clearance from the border is the inset by construction.
+            // The previous version computed an offset that put the knob's edge exactly on the stroke.
+            .overlay(alignment: alignment) {
+                if status.knob != nil {
+                    Circle()
+                        .fill(tint.opacity(status == .off ? 0.6 : 1))
+                        .frame(width: knobDiameter, height: knobDiameter)
+                        .padding(inset)
+                }
+            }
+            .frame(width: track.width, height: track.height)
+            .scaleEffect(isHovering && isLive ? 1.06 : 1)
+            .animation(.snappy(duration: 0.18), value: status)
+            .animation(.snappy(duration: 0.14), value: isHovering)
     }
 
-    private func offset(for knob: ExposureStatus.KnobPosition, in size: CGSize, radius: CGFloat) -> CGFloat {
-        let travel = size.width / 2 - radius + (radius - (size.height - 5) / 2)
-        switch knob {
-        case .leading: return -travel
-        case .trailing: return travel
-        case .middle: return 0
+    private var alignment: Alignment {
+        switch status.knob {
+        case .leading: .leading
+        case .trailing: .trailing
+        case .middle, nil: .center
         }
     }
 
