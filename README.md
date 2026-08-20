@@ -33,10 +33,12 @@ Skills                     Claude     Codex
 Requires macOS 26.
 
 ```bash
-brew install --cask --no-quarantine JC-kk/tap/ambit
+brew install --cask JC-kk/tap/ambit
 ```
 
-Or download `Ambit-1.0.0.dmg` from [Releases](../../releases), drag it to Applications, then:
+Or download `Ambit-1.0.0.dmg` from [Releases](../../releases) and drag Ambit to Applications.
+
+Then, either way:
 
 ```bash
 xattr -dr com.apple.quarantine /Applications/Ambit.app
@@ -47,10 +49,13 @@ xattr -dr com.apple.quarantine /Applications/Ambit.app
 Ambit is ad-hoc signed, not notarised. Notarisation needs a paid Apple Developer Program membership
 and this is a free tool, so macOS quarantines the download and refuses the first launch.
 
-The `xattr` line clears the quarantine flag and is the whole fix. If you would rather not run it: open
-the app, let macOS block it, then go to **System Settings → Privacy & Security** and press
-**Open Anyway**. On macOS 15 and later the old Control-click → Open shortcut no longer works for
-unnotarised apps, so System Settings is the only route.
+That one line clears the quarantine flag and is the whole fix. It is needed after a `brew install`
+too — the flag comes from downloading the disk image, not from Homebrew, and brew copies the app out
+of the mounted volume without stripping it.
+
+If you would rather not run it: open the app, let macOS block it, then go to **System Settings →
+Privacy & Security** and press **Open Anyway**. On macOS 15 and later the old Control-click → Open
+shortcut no longer works for unnotarised apps, so System Settings is the only route.
 
 Every release publishes `checksums.txt` so you can verify what you downloaded:
 

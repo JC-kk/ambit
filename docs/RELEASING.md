@@ -31,8 +31,12 @@ Two things worth being accurate about:
 
 - **Control-click → Open no longer works.** Apple removed that bypass for unnotarised apps in
   macOS 15. The GUI route is System Settings → Privacy & Security → "Open Anyway".
-- **Homebrew quarantines cask artifacts by default.** `brew install --cask` alone is not enough;
-  users need `--no-quarantine`, or the `xattr` line afterwards.
+- **A brew install is quarantined too, and `--no-quarantine` no longer exists.** Homebrew 6 removed
+  the flag because its own quarantine support is compiled out — but the app still arrives
+  quarantined, because the attribute comes from downloading the dmg and brew copies the app out of
+  the mounted volume without stripping it. Verified by installing: 9 quarantine attributes on
+  `/Applications/Ambit.app`. So the `xattr` line applies to every install route, not just manual
+  downloads.
 
 `checksums.txt` is published with every release so the download can be verified independently.
 

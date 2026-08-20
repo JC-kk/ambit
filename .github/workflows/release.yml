@@ -52,7 +52,7 @@ jobs:
           {
             printf '## Install\n\n'
             printf '```bash\n'
-            printf 'brew install --cask --no-quarantine JC-kk/tap/ambit\n'
+            printf 'brew install --cask JC-kk/tap/ambit\n'
             printf '```\n\n'
             printf 'Or download the `.dmg`, drag Ambit to Applications, then run:\n\n'
             printf '```bash\n'

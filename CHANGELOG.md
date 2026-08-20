@@ -32,9 +32,9 @@ First release of **Ambit** — the scope of what each agent can reach.
 
 ### Distribution
 - Ad-hoc signed, not notarised: notarisation requires a paid Apple Developer Program membership.
-  After downloading, clear the quarantine flag with
-  `xattr -dr com.apple.quarantine /Applications/Ambit.app`, or use
-  **System Settings → Privacy & Security → Open Anyway**. A locally built copy needs neither.
+  After installing — including via Homebrew, since the quarantine flag comes from the download
+  rather than from brew — clear it with `xattr -dr com.apple.quarantine /Applications/Ambit.app`, or
+  use **System Settings → Privacy & Security → Open Anyway**. A locally built copy needs neither.
 
 ### Safety
 - Disabling never deletes a source.
