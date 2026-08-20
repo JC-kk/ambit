@@ -1,6 +1,6 @@
 # Build output
 .build/
-AgentCapabilityManager.app/
+Ambit.app/
 Resources/AppIcon.iconset/
 
 # macOS
@@ -9,3 +9,4 @@ Resources/AppIcon.iconset/
 # Xcode
 *.xcodeproj/
 *.xcworkspace/
+dist/

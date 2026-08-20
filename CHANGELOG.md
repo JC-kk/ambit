@@ -5,7 +5,7 @@ All notable changes to this project are documented here. This project follows
 
 ## [1.0.0] — 2026-08-20
 
-First release.
+First release of **Ambit** — the scope of what each agent can reach.
 
 ### Added
 - Capability × agent matrix for **Skills**, **MCP servers** and **Subagents** across Claude Code and
@@ -20,7 +20,7 @@ First release.
 - Missing-source detection: if a library source is deleted by something else, the app says so
   instead of quietly dropping it from the list.
 - `--print` and `--consolidate [--yes]` for scripting; `--panel` to open the desktop panel directly.
-- `ACM_HOME` to point the whole app at a throwaway tree.
+- `AMBIT_HOME` to point the whole app at a throwaway tree.
 
 ### Mechanisms
 - Skills are exposed by per-skill symlink into `~/.claude/skills` and `~/.codex/skills`.
@@ -29,6 +29,12 @@ First release.
   Claude `.md` is converted when Codex is switched on.
 - Claude MCP servers are parked verbatim in the library when off; Codex MCP servers use the native
   `enabled` key.
+
+### Distribution
+- Ad-hoc signed, not notarised: notarisation requires a paid Apple Developer Program membership.
+  After downloading, clear the quarantine flag with
+  `xattr -dr com.apple.quarantine /Applications/Ambit.app`, or use
+  **System Settings → Privacy & Security → Open Anyway**. A locally built copy needs neither.
 
 ### Safety
 - Disabling never deletes a source.

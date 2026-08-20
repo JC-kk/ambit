@@ -28,7 +28,7 @@ body:
       label: Matrix output
       description: |
         Run this and paste the result. It is read-only and prints no file contents.
-        `/Applications/AgentCapabilityManager.app/Contents/MacOS/AgentCapabilityManager --print`
+        `/Applications/Ambit.app/Contents/MacOS/Ambit --print`
       render: text
   - type: checkboxes
     id: safety

@@ -1,24 +1,24 @@
 #!/bin/bash
-# Builds AgentCapabilityManager.app.
+# Builds Ambit.app.
 #
 # The scratch path deliberately lives outside this directory: Desktop is iCloud-synced here, and
 # the com.apple.FinderInfo xattr it adds makes `codesign` refuse the build products.
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")" && pwd)"
-SCRATCH="${ACM_SCRATCH:-${TMPDIR:-/tmp}/acm-build}"
+SCRATCH="${AMBIT_SCRATCH:-${TMPDIR:-/tmp}/ambit-build}"
 # Stage and sign in the scratch area, then copy the finished bundle out. Signing directly inside
 # an iCloud-synced folder fails: the fileprovider re-adds com.apple.FinderInfo between the xattr
 # strip and codesign, and codesign rejects it.
-STAGE="$SCRATCH/AgentCapabilityManager.app"
-APP="${ACM_OUTPUT:-$ROOT/AgentCapabilityManager.app}"
+STAGE="$SCRATCH/Ambit.app"
+APP="${AMBIT_OUTPUT:-$ROOT/Ambit.app}"
 
 swift build -c release --scratch-path "$SCRATCH"
-BIN="$(swift build -c release --scratch-path "$SCRATCH" --show-bin-path)/AgentCapabilityManager"
+BIN="$(swift build -c release --scratch-path "$SCRATCH" --show-bin-path)/Ambit"
 
 rm -rf "$STAGE"
 mkdir -p "$STAGE/Contents/MacOS" "$STAGE/Contents/Resources"
-cp "$BIN" "$STAGE/Contents/MacOS/AgentCapabilityManager"
+cp "$BIN" "$STAGE/Contents/MacOS/Ambit"
 
 if [ ! -f "$ROOT/Resources/AppIcon.icns" ]; then
   python3 "$ROOT/scripts/make_icon.py"
@@ -30,12 +30,12 @@ cat > "$STAGE/Contents/Info.plist" <<'PLIST'
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-  <key>CFBundleName</key><string>Agent Capabilities</string>
-  <key>CFBundleDisplayName</key><string>Agent Capabilities</string>
-  <key>CFBundleExecutable</key><string>AgentCapabilityManager</string>
-  <key>CFBundleIdentifier</key><string>local.agentcapabilities.manager</string>
+  <key>CFBundleName</key><string>Ambit</string>
+  <key>CFBundleDisplayName</key><string>Ambit</string>
+  <key>CFBundleExecutable</key><string>Ambit</string>
+  <key>CFBundleIdentifier</key><string>dev.ambit.Ambit</string>
   <key>CFBundlePackageType</key><string>APPL</string>
-  <key>CFBundleShortVersionString</key><string>1.0</string>
+  <key>CFBundleShortVersionString</key><string>1.0.0</string>
   <key>CFBundleVersion</key><string>1</string>
   <key>CFBundleIconFile</key><string>AppIcon</string>
   <key>CFBundleIconName</key><string>AppIcon</string>

@@ -19,9 +19,9 @@ single ~1 MB binary, zero third-party dependencies, and native Finder/AppKit int
 Tauri would add a ~1.5 GB toolchain install and a webview for no benefit here.
 
 Layout: SPM package, two targets.
-* `ACMCore` — all scanning / status / mutation logic. No AppKit. Fully unit-testable against
+* `AmbitCore` — all scanning / status / mutation logic. No AppKit. Fully unit-testable against
   temp fixture directories.
-* `AgentCapabilityManager` — SwiftUI shell.
+* `Ambit` — SwiftUI shell.
 
 No SQLite, no state manager, no persisted "enabled" database. Status is always re-derived
 from the filesystem and the agents' own config files.
@@ -176,7 +176,7 @@ Codex root. Any skill there is therefore **forced ON for Codex** and its Codex c
 `EXTERNAL` with an explanation rather than pretending a toggle would work. The app reports the
 conflict; it does not silently re-point the user's real directories.
 
-## 5. Safety rules (enforced in `ACMCore`, not just the UI)
+## 5. Safety rules (enforced in `AmbitCore`, not just the UI)
 
 * Disabling **never** deletes a source. The library is only written by `Adopt`.
 * An exposure entry is removed only if ownership is proven:

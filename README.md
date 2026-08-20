@@ -2,7 +2,7 @@
 
 <img src="docs/icon.png" width="112" alt="">
 
-# Agent Capabilities
+# Ambit
 
 **Which skills, MCP servers and subagents can Claude Code see? Which can Codex see?**
 One matrix, one switch each, and nothing gets deleted.
@@ -30,17 +30,46 @@ Skills                     Claude     Codex
 
 ## Install
 
-```bash
-brew install --cask <owner>/tap/agent-capabilities
-```
-
-Or grab the `.dmg` from [Releases](../../releases). Requires macOS 26.
-
-To build it yourself — Xcode 26+, no other dependencies, no Rust, no Node:
+Requires macOS 26.
 
 ```bash
-./build.sh && open AgentCapabilityManager.app
+brew install --cask --no-quarantine <owner>/tap/ambit
 ```
+
+Or download `Ambit-1.0.0.dmg` from [Releases](../../releases), drag it to Applications, then:
+
+```bash
+xattr -dr com.apple.quarantine /Applications/Ambit.app
+```
+
+### Why that extra command
+
+Ambit is ad-hoc signed, not notarised. Notarisation needs a paid Apple Developer Program membership
+and this is a free tool, so macOS quarantines the download and refuses the first launch.
+
+The `xattr` line clears the quarantine flag and is the whole fix. If you would rather not run it: open
+the app, let macOS block it, then go to **System Settings → Privacy & Security** and press
+**Open Anyway**. On macOS 15 and later the old Control-click → Open shortcut no longer works for
+unnotarised apps, so System Settings is the only route.
+
+Every release publishes `checksums.txt` so you can verify what you downloaded:
+
+```bash
+shasum -a 256 -c checksums.txt
+```
+
+Ambit makes no network requests at all — if you would rather not trust a binary, the whole thing is
+~2,700 lines of logic and ~1,400 of UI, and it builds in about ten seconds.
+
+### Build it yourself
+
+Xcode 26+, no other dependencies — no Rust, no Node, no package manager:
+
+```bash
+./build.sh && open Ambit.app
+```
+
+A locally built copy is never quarantined, so nothing extra is needed.
 
 ## Start here: Consolidate
 
@@ -53,8 +82,8 @@ It shows you the whole plan first. Nothing is deleted: a duplicate that cannot b
 copy is parked under `backups/`, and every move is written to a manifest.
 
 ```bash
-AgentCapabilityManager --consolidate          # print the plan
-AgentCapabilityManager --consolidate --yes    # carry it out
+Ambit --consolidate          # print the plan
+Ambit --consolidate --yes    # carry it out
 ```
 
 ## Two ways to read the same thing
@@ -152,10 +181,10 @@ rather than the UI:
 ## Command line
 
 ```bash
-AgentCapabilityManager --print                 # the matrix, as text; read-only
-AgentCapabilityManager --consolidate [--yes]   # plan, or carry it out
-AgentCapabilityManager --panel                 # open the desktop panel directly
-ACM_HOME=/tmp/fake AgentCapabilityManager      # point everything at a throwaway tree
+Ambit --print                 # the matrix, as text; read-only
+Ambit --consolidate [--yes]   # plan, or carry it out
+Ambit --panel                 # open the desktop panel directly
+AMBIT_HOME=/tmp/fake Ambit      # point everything at a throwaway tree
 ```
 
 ## If your Codex column looks stuck

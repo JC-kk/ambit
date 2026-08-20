@@ -21,20 +21,20 @@ more than once.
 ## Layout
 
 ```
-Sources/ACMCore/                 all logic — pure Foundation, no AppKit, no SwiftUI
-Sources/AgentCapabilityManager/  the SwiftUI shell
-Tests/ACMCoreTests/              fixture-based tests
+Sources/AmbitCore/                 all logic — pure Foundation, no AppKit, no SwiftUI
+Sources/Ambit/  the SwiftUI shell
+Tests/AmbitCoreTests/              fixture-based tests
 scripts/make_icon.py             regenerates Resources/AppIcon.icns
 ```
 
-`ACMCore` deliberately has no UI dependency. Put behaviour there, keep views thin, and the behaviour
+`AmbitCore` deliberately has no UI dependency. Put behaviour there, keep views thin, and the behaviour
 stays testable.
 
 ## Running things
 
 ```bash
-swift test --scratch-path /tmp/acm-build     # 52 tests, ~0.2s
-./build.sh && open AgentCapabilityManager.app
+swift test --scratch-path /tmp/ambit-build     # 52 tests, ~0.2s
+./build.sh && open Ambit.app
 ```
 
 `build.sh` and `swift test` stage outside the project directory on purpose: if the repo sits in an
@@ -42,7 +42,7 @@ iCloud-synced folder, the `com.apple.FinderInfo` xattr it adds makes `codesign` 
 
 ## Tests
 
-Every test runs inside a throwaway `HOME` (see `Tests/ACMCoreTests/Fixture.swift`). Nothing in the
+Every test runs inside a throwaway `HOME` (see `Tests/AmbitCoreTests/Fixture.swift`). Nothing in the
 suite may read or write a real `~/.claude`, `~/.codex` or `~/.agents` — if you need to try something
 against your own setup, copy it into a fixture first.
 
