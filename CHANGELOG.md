@@ -3,6 +3,14 @@
 All notable changes to this project are documented here. This project follows
 [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Fixed
+- Turning a parked MCP server back on no longer reports it as a source deleted by something else.
+  Parking is a move, so the library copy is *meant* to disappear on enable; presence is now judged
+  across the parked directory, `~/.claude.json` and `config.toml` together. A server this app never
+  parked is still not tracked at all.
+
 ## [1.0.0] — 2026-08-20
 
 First release of **Ambit** — the scope of what each agent can reach.

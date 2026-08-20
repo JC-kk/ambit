@@ -35,9 +35,8 @@ public struct CapabilityStore: Sendable {
         // Only library-backed capabilities are remembered: those are the ones this app took
         // responsibility for. An external capability the user removes from their own directory is
         // their business, not a loss we should nag about.
-        let managed = managedNames(in: capabilities)
-        let missing = ledger.missing(present: managed)
-        ledger.remember(managed)
+        let missing = ledger.missing(present: presentNames(in: capabilities))
+        ledger.remember(managedNames(in: capabilities))
 
         if !missing.isEmpty {
             diagnostics.append(Diagnostic(
@@ -51,16 +50,31 @@ public struct CapabilityStore: Sendable {
 
     /// Stops reporting sources that have gone missing.
     public func forgetMissingSources() {
-        let managed = managedNames(in: scan().capabilities)
-        ledger.forget(ledger.missing(present: managed))
+        let present = presentNames(in: scan().capabilities)
+        ledger.forget(ledger.missing(present: present))
     }
 
+    /// What to start remembering: a library copy exists, so this app is now holding the source.
     private func managedNames(in capabilities: [Capability]) -> [CapabilityKind: Set<String>] {
         var managed: [CapabilityKind: Set<String>] = [:]
         for capability in capabilities where capability.librarySource != nil {
             managed[capability.kind, default: []].insert(capability.name)
         }
         return managed
+    }
+
+    /// What still exists — deliberately wider than `managedNames`, because for MCP a library copy
+    /// is only *one* of the places a definition legitimately lives. Parking is a move: enabling a
+    /// parked server for Claude puts its JSON back into ~/.claude.json and drops the library copy,
+    /// so judging presence by the library alone would report an ordinary toggle as a lost source.
+    /// An MCP name reaches the inventory only from the parked directory, ~/.claude.json or
+    /// config.toml, so appearing here is itself proof the definition survives somewhere.
+    private func presentNames(in capabilities: [Capability]) -> [CapabilityKind: Set<String>] {
+        var present: [CapabilityKind: Set<String>] = [:]
+        for capability in capabilities where capability.kind == .mcp || capability.librarySource != nil {
+            present[capability.kind, default: []].insert(capability.name)
+        }
+        return present
     }
 
     static func missingMessage(_ missing: [CapabilityKind: [String]]) -> String {
