@@ -21,10 +21,11 @@ jobs:
       - name: Test
         run: swift test --scratch-path "$RUNNER_TEMP/build"
 
-      # Optional. Without these secrets the app is ad-hoc signed, and first launch needs
-      # right-click → Open. See docs/RELEASING.md for how to set them up.
-      - name: Sign and notarize
-        if: ${{ secrets.MACOS_CERTIFICATE != '' }}
+      # No `if:` guard here on purpose. The `secrets` context is not available in a step-level
+      # condition — using it there makes GitHub reject the whole workflow before any job starts —
+      # and the script already exits successfully when no certificate is configured, leaving the
+      # ad-hoc signature in place. See docs/RELEASING.md.
+      - name: Sign and notarize if a certificate is configured
         env:
           MACOS_CERTIFICATE: ${{ secrets.MACOS_CERTIFICATE }}
           MACOS_CERTIFICATE_PASSWORD: ${{ secrets.MACOS_CERTIFICATE_PASSWORD }}
