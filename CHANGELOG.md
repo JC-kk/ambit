@@ -3,7 +3,7 @@
 All notable changes to this project are documented here. This project follows
 [Semantic Versioning](https://semver.org/).
 
-## [Unreleased]
+## [1.0.1] — 2026-08-20
 
 ### Fixed
 - Turning a parked MCP server back on no longer reports it as a source deleted by something else.

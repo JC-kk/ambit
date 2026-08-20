@@ -59,7 +59,7 @@ Requires macOS 26.
 brew install --cask JC-kk/tap/ambit
 ```
 
-Or download `Ambit-1.0.0.dmg` from [Releases](../../releases) and drag Ambit to Applications.
+Or download `Ambit-1.0.1.dmg` from [Releases](../../releases) and drag Ambit to Applications.
 
 Then, either way:
 
