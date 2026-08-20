@@ -84,7 +84,7 @@ base64 -i DeveloperID.p12 | pbcopy
 Users then install with:
 
 ```bash
-brew install --cask <your-github-user>/tap/ambit
+brew install --cask JC-kk/tap/ambit
 ```
 
 Bumping the cask on every release can be automated later; doing it by hand for the first few

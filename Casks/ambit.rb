@@ -1,11 +1,11 @@
 cask "ambit" do
   version "1.0.0"
-  sha256 "REPLACE_WITH_SHA256_FROM_checksums.txt"
+  sha256 "fa15ef253ce2769bcc5e376d3d55061172e699a9e507dd71d439ca24c422db4a"
 
-  url "https://github.com/OWNER/REPO/releases/download/v#{version}/Ambit-#{version}.dmg"
+  url "https://github.com/JC-kk/ambit/releases/download/v#{version}/Ambit-#{version}.dmg"
   name "Ambit"
   desc "Menu bar control panel for Claude Code and Codex skills, MCP servers and subagents"
-  homepage "https://github.com/OWNER/REPO"
+  homepage "https://github.com/JC-kk/ambit"
 
   # Ad-hoc signed rather than notarised: notarisation needs a paid Apple Developer account. Install
   # with `--no-quarantine`, or clear the flag afterwards with

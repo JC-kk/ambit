@@ -33,7 +33,7 @@ Skills                     Claude     Codex
 Requires macOS 26.
 
 ```bash
-brew install --cask --no-quarantine <owner>/tap/ambit
+brew install --cask --no-quarantine JC-kk/tap/ambit
 ```
 
 Or download `Ambit-1.0.0.dmg` from [Releases](../../releases), drag it to Applications, then:
