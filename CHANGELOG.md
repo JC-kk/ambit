@@ -3,6 +3,32 @@
 All notable changes to this project are documented here. This project follows
 [Semantic Versioning](https://semver.org/).
 
+## [2.0.0] — 2026-08-21
+
+### Changed
+- **Renamed from Ambit to Skillswitch.** The old name said nothing about what the app manages, which
+  is the whole problem when the thing being managed is a directory of skills. The app, the bundle
+  identifier (`dev.skillswitch.Skillswitch`), the cask and the `SKILLSWITCH_HOME` override all move
+  with it.
+- **The library moved from `~/.agent-capabilities` to `~/.skillswitch`.** This is the breaking part.
+  Every symlink and hard link in `~/.claude` and `~/.codex` points at absolute paths inside the
+  library, Codex agent roles record an absolute `config_file`, and skill scripts are written against
+  the library path by convention — so all of those need rewriting, not just the folder.
+
+  **Upgrading by hand:** move the directory, then leave a symlink behind so nothing breaks while you
+  work through the rest.
+
+  ```bash
+  mv ~/.agent-capabilities ~/.skillswitch
+  ln -s ~/.skillswitch ~/.agent-capabilities
+  ```
+
+  Then open Skillswitch: exposures that still point through the old path read as ordinary rows, and
+  switching one off and on again repoints it. Anything with the old path written *inside* it — Codex
+  role files under `agents/codex`, and any skill whose SKILL.md references its own scripts — needs
+  the string replaced. Leave copies under `backups/` alone; an edited backup is not a backup. Delete
+  the compatibility symlink once nothing references it.
+
 ## [1.1.0] — 2026-08-20
 
 ### Added

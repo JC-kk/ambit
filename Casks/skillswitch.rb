@@ -1,9 +1,6 @@
-# NOT PUBLISHABLE YET. The version and checksum below still describe the last release cut under the
-# old name (Ambit-1.1.0.dmg), so this URL 404s. Cut a release whose asset is Skillswitch-<version>.dmg,
-# then replace both lines.
 cask "skillswitch" do
-  version "1.1.0"
-  sha256 "d0a71a44526c13f881b239af69ec59362c36b32e5d8fcc6a5e23d6e51316d2fe"
+  version "2.0.0"
+  sha256 "890557b660aa54aa22cd1010cd0138a04afcb6564beb98fafa87ec1ab2d1a5e1"
 
   url "https://github.com/JC-kk/skillswitch/releases/download/v#{version}/Skillswitch-#{version}.dmg"
   name "Skillswitch"
