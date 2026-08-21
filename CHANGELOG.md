@@ -10,6 +10,9 @@ All notable changes to this project are documented here. This project follows
   is the whole problem when the thing being managed is a directory of skills. The app, the bundle
   identifier (`dev.skillswitch.Skillswitch`), the cask and the `SKILLSWITCH_HOME` override all move
   with it.
+- **New icon.** Three vertical ticks off the app's own patch row — clay for Claude, cyan for Codex,
+  one switched off between them. Flat, because the interfaces it belongs to are flat; vertical,
+  because three horizontal bars read as a hamburger menu at 16pt.
 - **The library moved from `~/.agent-capabilities` to `~/.skillswitch`.** This is the breaking part.
   Every symlink and hard link in `~/.claude` and `~/.codex` points at absolute paths inside the
   library, Codex agent roles record an absolute `config_file`, and skill scripts are written against
