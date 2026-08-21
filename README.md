@@ -2,10 +2,10 @@
 
 <img src="docs/icon.png" width="112" alt="">
 
-# Ambit
+# Skillswitch
 
 **Every skill you keep installed pays rent in your context window — every turn, before you type
-anything.** Ambit is the switchboard.
+anything.** Skillswitch is the switchboard.
 
 </div>
 
@@ -46,7 +46,7 @@ None of it is documented anywhere I could find, so I read the binaries and probe
 mechanism was pinned down against a specific version. Those findings are the real substance of this
 project and they are all in [DESIGN.md](DESIGN.md).
 
-Ambit is a menu bar app in plain Swift — SwiftUI, no dependencies, no Rust, no Node, no network.
+Skillswitch is a menu bar app in plain Swift — SwiftUI, no dependencies, no Rust, no Node, no network.
 About 2,700 lines of logic and 1,400 of interface. It was written for exactly one person's problem.
 If it happens to be yours as well, I would rather it got better: see
 [CONTRIBUTING.md](CONTRIBUTING.md).
@@ -56,32 +56,32 @@ If it happens to be yours as well, I would rather it got better: see
 Requires macOS 26.
 
 ```bash
-brew install --cask JC-kk/tap/ambit
+brew install --cask JC-kk/tap/skillswitch
 ```
 
-Or download `Ambit-1.1.0.dmg` from [Releases](../../releases) and drag Ambit to Applications.
+Or download `Skillswitch-1.1.0.dmg` from [Releases](../../releases) and drag Skillswitch to Applications.
 
 Then, either way:
 
 ```bash
-xattr -dr com.apple.quarantine /Applications/Ambit.app
+xattr -dr com.apple.quarantine /Applications/Skillswitch.app
 ```
 
 ### Why that extra command
 
-Ambit is ad-hoc signed, not notarised. Notarisation needs a paid Apple Developer Program membership
+Skillswitch is ad-hoc signed, not notarised. Notarisation needs a paid Apple Developer Program membership
 and this is a free tool, so macOS marks the download as quarantined and may refuse to open it.
 
 That one line clears the flag. It applies after a `brew install` too — the flag comes from
 downloading the disk image, not from Homebrew, and brew copies the app out of the mounted volume
-without stripping it. (Measured: nine quarantine attributes on `/Applications/Ambit.app` after a
+without stripping it. (Measured: nine quarantine attributes on `/Applications/Skillswitch.app` after a
 clean cask install.)
 
 If macOS blocks it anyway, go to **System Settings → Privacy & Security** and press **Open Anyway**.
 On macOS 15 and later the old Control-click → Open shortcut no longer works for unnotarised apps, so
 System Settings is the only route.
 
-`spctl --assess` will always report `rejected` for Ambit, before *and* after clearing quarantine.
+`spctl --assess` will always report `rejected` for Skillswitch, before *and* after clearing quarantine.
 That is expected — it asks whether the app satisfies the notarisation policy, which an ad-hoc
 signature never can, and it is not the same question as whether the app will launch.
 
@@ -91,7 +91,7 @@ Every release publishes `checksums.txt` so you can verify what you downloaded:
 shasum -a 256 -c checksums.txt
 ```
 
-Ambit makes no network requests at all — and if you would rather not trust a binary, the whole thing
+Skillswitch makes no network requests at all — and if you would rather not trust a binary, the whole thing
 builds in about ten seconds.
 
 ### Build it yourself
@@ -99,7 +99,7 @@ builds in about ten seconds.
 Xcode 26+, no other dependencies — no Rust, no Node, no package manager:
 
 ```bash
-./build.sh && open Ambit.app
+./build.sh && open Skillswitch.app
 ```
 
 A locally built copy is never quarantined, so nothing extra is needed.
@@ -107,7 +107,7 @@ A locally built copy is never quarantined, so nothing extra is needed.
 ## Start here: Consolidate
 
 Out of the box your skills and subagents live inside Claude's and Codex's own folders, which is why
-the two columns move together. **Consolidate** moves each source into `~/.agent-capabilities` and
+the two columns move together. **Consolidate** moves each source into `~/.skillswitch` and
 links it straight back, so nothing changes about what either agent can see — the switches just start
 working.
 
@@ -115,8 +115,8 @@ It shows you the whole plan first. Nothing is deleted: a duplicate that cannot b
 copy is parked under `backups/`, and every move is written to a manifest.
 
 ```bash
-Ambit --consolidate          # print the plan
-Ambit --consolidate --yes    # carry it out
+Skillswitch --consolidate          # print the plan
+Skillswitch --consolidate --yes    # carry it out
 ```
 
 ## Two ways to read the same thing
@@ -201,7 +201,7 @@ are easy to get wrong:
 
 ## Safety
 
-Ambit edits files you cannot afford to lose, so the rules are narrow and enforced in the core rather
+Skillswitch edits files you cannot afford to lose, so the rules are narrow and enforced in the core rather
 than the UI:
 
 - **Disabling never deletes a source.**
@@ -225,10 +225,10 @@ than the UI:
 ## Command line
 
 ```bash
-Ambit --print                 # the matrix, as text; read-only
-Ambit --consolidate [--yes]   # plan, or carry it out
-Ambit --panel                 # open the desktop panel directly
-AMBIT_HOME=/tmp/fake Ambit      # point everything at a throwaway tree
+Skillswitch --print                 # the matrix, as text; read-only
+Skillswitch --consolidate [--yes]   # plan, or carry it out
+Skillswitch --panel                 # open the desktop panel directly
+SKILLSWITCH_HOME=/tmp/fake Skillswitch      # point everything at a throwaway tree
 ```
 
 ## If your Codex column looks stuck

@@ -15,13 +15,13 @@ Review it, then publish.
 
 ## Gatekeeper, without a developer account
 
-Ambit ships **ad-hoc signed**. That is a real signature, so the binary is tamper-evident, but it is
+Skillswitch ships **ad-hoc signed**. That is a real signature, so the binary is tamper-evident, but it is
 not *notarised* — notarisation requires a paid Apple Developer account.
 
 The practical consequence is one line for the user:
 
 ```bash
-xattr -dr com.apple.quarantine /Applications/Ambit.app
+xattr -dr com.apple.quarantine /Applications/Skillswitch.app
 ```
 
 Put that in every release's notes. It is the single most common support question for unsigned macOS
@@ -35,7 +35,7 @@ Two things worth being accurate about:
   the flag because its own quarantine support is compiled out — but the app still arrives
   quarantined, because the attribute comes from downloading the dmg and brew copies the app out of
   the mounted volume without stripping it. Verified by installing: 9 quarantine attributes on
-  `/Applications/Ambit.app`. So the `xattr` line applies to every install route, not just manual
+  `/Applications/Skillswitch.app`. So the `xattr` line applies to every install route, not just manual
   downloads.
 
 `checksums.txt` is published with every release so the download can be verified independently.
@@ -53,7 +53,7 @@ Signing a public build with the development certificate would be worse than ad-h
 2. Development certificates expire after a year. Copies already installed would start failing
    signature validation. An ad-hoc signature never expires.
 3. It embeds the account's email address in the binary, visible to anyone who runs
-   `codesign -dv Ambit.app`.
+   `codesign -dv Skillswitch.app`.
 
 So: ad-hoc, plus the `xattr` line, until someone pays for a membership.
 
@@ -79,16 +79,16 @@ base64 -i DeveloperID.p12 | pbcopy
 
 ## Homebrew
 
-`Casks/ambit.rb` is a cask template. To distribute through a tap:
+`Casks/skillswitch.rb` is a cask template. To distribute through a tap:
 
 1. Create a repo named `homebrew-tap`.
-2. Copy the cask in as `Casks/ambit.rb`.
+2. Copy the cask in as `Casks/skillswitch.rb`.
 3. Update `version` and `sha256` from the release's `checksums.txt`.
 
 Users then install with:
 
 ```bash
-brew install --cask JC-kk/tap/ambit
+brew install --cask JC-kk/tap/skillswitch
 ```
 
 Bumping the cask on every release can be automated later; doing it by hand for the first few

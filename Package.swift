@@ -2,12 +2,12 @@
 import PackageDescription
 
 let package = Package(
-    name: "Ambit",
+    name: "Skillswitch",
     platforms: [.macOS("26.0")],
     targets: [
         // Pure logic: scanning, status derivation, safe config mutation. No AppKit/SwiftUI.
-        .target(name: "AmbitCore"),
-        .executableTarget(name: "Ambit", dependencies: ["AmbitCore"]),
-        .testTarget(name: "AmbitCoreTests", dependencies: ["AmbitCore"]),
+        .target(name: "SkillswitchCore"),
+        .executableTarget(name: "Skillswitch", dependencies: ["SkillswitchCore"]),
+        .testTarget(name: "SkillswitchCoreTests", dependencies: ["SkillswitchCore"]),
     ]
 )

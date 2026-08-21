@@ -28,7 +28,7 @@ body:
       label: Matrix output
       description: |
         Run this and paste the result. It is read-only and prints no file contents.
-        `/Applications/Ambit.app/Contents/MacOS/Ambit --print`
+        `/Applications/Skillswitch.app/Contents/MacOS/Skillswitch --print`
       render: text
   - type: checkboxes
     id: safety

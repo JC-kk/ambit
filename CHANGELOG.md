@@ -23,7 +23,7 @@ All notable changes to this project are documented here. This project follows
 
 ## [1.0.0] — 2026-08-20
 
-First release of **Ambit** — the scope of what each agent can reach.
+First release of **Skillswitch** — the scope of what each agent can reach.
 
 ### Added
 - Capability × agent matrix for **Skills**, **MCP servers** and **Subagents** across Claude Code and
@@ -31,14 +31,14 @@ First release of **Ambit** — the scope of what each agent can reach.
 - Per-agent view: everything one agent can load, grouped by kind, with a read-only note of what the
   other agent is doing.
 - Menu bar item with a compact popover, plus the full desktop panel on demand.
-- **Consolidate**: moves every remaining source into `~/.agent-capabilities` and links it back, so
+- **Consolidate**: moves every remaining source into `~/.skillswitch` and links it back, so
   the switches become independent without changing what either agent can see.
 - Five honest states — `ON`, `OFF`, `EXTERNAL`, `BROKEN`, `N/A` — all derived from the filesystem and
   the agents' own config files on every scan.
 - Missing-source detection: if a library source is deleted by something else, the app says so
   instead of quietly dropping it from the list.
 - `--print` and `--consolidate [--yes]` for scripting; `--panel` to open the desktop panel directly.
-- `AMBIT_HOME` to point the whole app at a throwaway tree.
+- `SKILLSWITCH_HOME` to point the whole app at a throwaway tree.
 
 ### Mechanisms
 - Skills are exposed by per-skill symlink into `~/.claude/skills` and `~/.codex/skills`.
@@ -51,7 +51,7 @@ First release of **Ambit** — the scope of what each agent can reach.
 ### Distribution
 - Ad-hoc signed, not notarised: notarisation requires a paid Apple Developer Program membership.
   After installing — including via Homebrew, since the quarantine flag comes from the download
-  rather than from brew — clear it with `xattr -dr com.apple.quarantine /Applications/Ambit.app`, or
+  rather than from brew — clear it with `xattr -dr com.apple.quarantine /Applications/Skillswitch.app`, or
   use **System Settings → Privacy & Security → Open Anyway**. A locally built copy needs neither.
 
 ### Safety

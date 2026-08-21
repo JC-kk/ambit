@@ -225,7 +225,7 @@ class Brand:
     def draw(self, d, img, y):
         icon = Image.open("Resources/AppIcon-preview.png").convert("RGBA").resize((188, 188), Image.LANCZOS)
         img.paste(icon, (MARGIN, y), icon)
-        d.text((MARGIN + 226, y + 30), "Ambit", font=sans(86), fill=INK)
+        d.text((MARGIN + 226, y + 30), "Skillswitch", font=sans(86), fill=INK)
         d.text((MARGIN + 230, y + 140), "macOS menu bar", font=mono(28), fill=FAINT)
         return y + 188 + self.gap
 
@@ -243,7 +243,7 @@ class LinkBox:
                              fill=(14, 15, 18, 235), outline=CLAY + (170,), width=3)
         img.paste(plate, (MARGIN, y), plate)
         d.text((MARGIN + 44, y + 42), "项目地址", font=sans(28, bold=False), fill=FAINT)
-        d.text((MARGIN + 44, y + 98), "github.com/JC-kk/ambit", font=mono(43, bold=True), fill=CLAY)
+        d.text((MARGIN + 44, y + 98), "github.com/JC-kk/skillswitch", font=mono(43, bold=True), fill=CLAY)
         return y + 200 + self.gap
 
 
@@ -263,7 +263,7 @@ def render(blocks, eyebrow=None, align="center"):
     for b in blocks:
         y = b.draw(d, img, y)
 
-    d.text((MARGIN, H - 76), "Ambit", font=mono(24), fill=(88, 89, 95))
+    d.text((MARGIN, H - 76), "Skillswitch", font=mono(24), fill=(88, 89, 95))
     return img
 
 

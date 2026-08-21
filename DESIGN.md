@@ -19,9 +19,9 @@ single ~1 MB binary, zero third-party dependencies, and native Finder/AppKit int
 Tauri would add a ~1.5 GB toolchain install and a webview for no benefit here.
 
 Layout: SPM package, two targets.
-* `AmbitCore` — all scanning / status / mutation logic. No AppKit. Fully unit-testable against
+* `SkillswitchCore` — all scanning / status / mutation logic. No AppKit. Fully unit-testable against
   temp fixture directories.
-* `Ambit` — SwiftUI shell.
+* `Skillswitch` — SwiftUI shell.
 
 No SQLite, no state manager, no persisted "enabled" database. Status is always re-derived
 from the filesystem and the agents' own config files.
@@ -118,7 +118,7 @@ restores it byte-for-byte — including keys we never modelled.
   `disabledMcpServers` setting found in the binary is keyed **per project**
   (`~/.claude.json → projects[cwd]`), so it cannot express a global off.
   Global off is therefore done by **parking**: the server's JSON object is moved verbatim
-  into `~/.agent-capabilities/mcp/parked/claude/<name>.json` and moved back on enable.
+  into `~/.skillswitch/mcp/parked/claude/<name>.json` and moved back on enable.
 
 ### JSON must be edited as text, not re-serialised
 
@@ -136,7 +136,7 @@ written.
 ## 2. Central library## 2. Central library
 
 ```
-~/.agent-capabilities/
+~/.skillswitch/
 ├── skills/<name>/SKILL.md          # directories — exposed by symlink
 ├── agents/
 │   ├── claude/<name>.md            # exposed by hard link
@@ -176,11 +176,11 @@ Codex root. Any skill there is therefore **forced ON for Codex** and its Codex c
 `EXTERNAL` with an explanation rather than pretending a toggle would work. The app reports the
 conflict; it does not silently re-point the user's real directories.
 
-## 5. Safety rules (enforced in `AmbitCore`, not just the UI)
+## 5. Safety rules (enforced in `SkillswitchCore`, not just the UI)
 
 * Disabling **never** deletes a source. The library is only written by `Adopt`.
 * An exposure entry is removed only if ownership is proven:
-  * symlink → is a symlink **and** resolves inside `~/.agent-capabilities/skills`
+  * symlink → is a symlink **and** resolves inside `~/.skillswitch/skills`
   * hard link → `(st_dev, st_ino)` matches the library file
 * A regular file/directory in a discovery path is never deleted. An unknown symlink is never deleted.
 * Every config mutation: **backup → parse → minimal in-place edit → re-parse to validate → atomic
@@ -193,7 +193,7 @@ conflict; it does not silently re-point the user's real directories.
 `Consolidate` makes the library the only home for every skill and subagent:
 
 1. Every real skill directory found in `~/.agents/skills`, `~/.claude/skills` or `~/.codex/skills`
-   is **moved** into `~/.agent-capabilities/skills/`. Two copies of one name: the first wins, the
+   is **moved** into `~/.skillswitch/skills/`. Two copies of one name: the first wins, the
    other is parked under `backups/`, never deleted.
 2. If `~/.claude/skills` is a symlink, it is replaced by a real directory — this is the step that
    makes the Claude and Codex columns independent, because the old target was a Codex root.

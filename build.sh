@@ -1,24 +1,24 @@
 #!/bin/bash
-# Builds Ambit.app.
+# Builds Skillswitch.app.
 #
 # The scratch path deliberately lives outside this directory: Desktop is iCloud-synced here, and
 # the com.apple.FinderInfo xattr it adds makes `codesign` refuse the build products.
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")" && pwd)"
-SCRATCH="${AMBIT_SCRATCH:-${TMPDIR:-/tmp}/ambit-build}"
+SCRATCH="${SKILLSWITCH_SCRATCH:-${TMPDIR:-/tmp}/skillswitch-build}"
 # Stage and sign in the scratch area, then copy the finished bundle out. Signing directly inside
 # an iCloud-synced folder fails: the fileprovider re-adds com.apple.FinderInfo between the xattr
 # strip and codesign, and codesign rejects it.
-STAGE="$SCRATCH/Ambit.app"
-APP="${AMBIT_OUTPUT:-$ROOT/Ambit.app}"
+STAGE="$SCRATCH/Skillswitch.app"
+APP="${SKILLSWITCH_OUTPUT:-$ROOT/Skillswitch.app}"
 
 swift build -c release --scratch-path "$SCRATCH"
-BIN="$(swift build -c release --scratch-path "$SCRATCH" --show-bin-path)/Ambit"
+BIN="$(swift build -c release --scratch-path "$SCRATCH" --show-bin-path)/Skillswitch"
 
 rm -rf "$STAGE"
 mkdir -p "$STAGE/Contents/MacOS" "$STAGE/Contents/Resources"
-cp "$BIN" "$STAGE/Contents/MacOS/Ambit"
+cp "$BIN" "$STAGE/Contents/MacOS/Skillswitch"
 
 if [ ! -f "$ROOT/Resources/AppIcon.icns" ]; then
   python3 "$ROOT/scripts/make_icon.py"
@@ -30,10 +30,10 @@ cat > "$STAGE/Contents/Info.plist" <<'PLIST'
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-  <key>CFBundleName</key><string>Ambit</string>
-  <key>CFBundleDisplayName</key><string>Ambit</string>
-  <key>CFBundleExecutable</key><string>Ambit</string>
-  <key>CFBundleIdentifier</key><string>dev.ambit.Ambit</string>
+  <key>CFBundleName</key><string>Skillswitch</string>
+  <key>CFBundleDisplayName</key><string>Skillswitch</string>
+  <key>CFBundleExecutable</key><string>Skillswitch</string>
+  <key>CFBundleIdentifier</key><string>dev.skillswitch.Skillswitch</string>
   <key>CFBundlePackageType</key><string>APPL</string>
   <key>CFBundleShortVersionString</key><string>1.1.0</string>
   <key>CFBundleVersion</key><string>1</string>

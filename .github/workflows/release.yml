@@ -33,7 +33,7 @@ jobs:
           NOTARY_APPLE_ID: ${{ secrets.NOTARY_APPLE_ID }}
           NOTARY_TEAM_ID: ${{ secrets.NOTARY_TEAM_ID }}
           NOTARY_PASSWORD: ${{ secrets.NOTARY_PASSWORD }}
-        run: ./scripts/sign_and_notarize.sh Ambit.app
+        run: ./scripts/sign_and_notarize.sh Skillswitch.app
 
       - name: Package
         id: package
@@ -41,9 +41,9 @@ jobs:
           VERSION="${GITHUB_REF_NAME#v}"
           [ -n "${{ inputs.tag }}" ] && VERSION="${{ inputs.tag }}"
           VERSION="${VERSION#v}"
-          AMBIT_SCRATCH="$RUNNER_TEMP/build" ./scripts/package.sh "$VERSION"
-          echo "dmg=dist/Ambit-$VERSION.dmg" >> "$GITHUB_OUTPUT"
-          echo "zip=dist/Ambit-$VERSION.zip" >> "$GITHUB_OUTPUT"
+          SKILLSWITCH_SCRATCH="$RUNNER_TEMP/build" ./scripts/package.sh "$VERSION"
+          echo "dmg=dist/Skillswitch-$VERSION.dmg" >> "$GITHUB_OUTPUT"
+          echo "zip=dist/Skillswitch-$VERSION.zip" >> "$GITHUB_OUTPUT"
 
       # The quarantine note goes above the changelog on purpose: for an unnotarised app it is the
       # difference between "it won't open" issues and none.
@@ -52,13 +52,13 @@ jobs:
           {
             printf '## Install\n\n'
             printf '```bash\n'
-            printf 'brew install --cask JC-kk/tap/ambit\n'
+            printf 'brew install --cask JC-kk/tap/skillswitch\n'
             printf '```\n\n'
-            printf 'Or download the `.dmg`, drag Ambit to Applications, then run:\n\n'
+            printf 'Or download the `.dmg`, drag Skillswitch to Applications, then run:\n\n'
             printf '```bash\n'
-            printf 'xattr -dr com.apple.quarantine /Applications/Ambit.app\n'
+            printf 'xattr -dr com.apple.quarantine /Applications/Skillswitch.app\n'
             printf '```\n\n'
-            printf 'Ambit is ad-hoc signed, not notarised, because notarisation needs a paid Apple\n'
+            printf 'Skillswitch is ad-hoc signed, not notarised, because notarisation needs a paid Apple\n'
             printf 'Developer account. That single command is the whole workaround. Verify the\n'
             printf 'download first if you like: `shasum -a 256 -c checksums.txt`.\n\n'
             printf 'Requires macOS 26.\n\n---\n\n'

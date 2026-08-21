@@ -21,20 +21,20 @@ more than once.
 ## Layout
 
 ```
-Sources/AmbitCore/                 all logic — pure Foundation, no AppKit, no SwiftUI
-Sources/Ambit/  the SwiftUI shell
-Tests/AmbitCoreTests/              fixture-based tests
+Sources/SkillswitchCore/                 all logic — pure Foundation, no AppKit, no SwiftUI
+Sources/Skillswitch/  the SwiftUI shell
+Tests/SkillswitchCoreTests/              fixture-based tests
 scripts/make_icon.py             regenerates Resources/AppIcon.icns
 ```
 
-`AmbitCore` deliberately has no UI dependency. Put behaviour there, keep views thin, and the behaviour
+`SkillswitchCore` deliberately has no UI dependency. Put behaviour there, keep views thin, and the behaviour
 stays testable.
 
 ## Running things
 
 ```bash
-swift test --scratch-path /tmp/ambit-build     # 52 tests, ~0.2s
-./build.sh && open Ambit.app
+swift test --scratch-path /tmp/skillswitch-build     # 52 tests, ~0.2s
+./build.sh && open Skillswitch.app
 ```
 
 `build.sh` and `swift test` stage outside the project directory on purpose: if the repo sits in an
@@ -42,7 +42,7 @@ iCloud-synced folder, the `com.apple.FinderInfo` xattr it adds makes `codesign` 
 
 ## Tests
 
-Every test runs inside a throwaway `HOME` (see `Tests/AmbitCoreTests/Fixture.swift`). Nothing in the
+Every test runs inside a throwaway `HOME` (see `Tests/SkillswitchCoreTests/Fixture.swift`). Nothing in the
 suite may read or write a real `~/.claude`, `~/.codex` or `~/.agents` — if you need to try something
 against your own setup, copy it into a fixture first.
 
@@ -66,3 +66,14 @@ interesting assertions in this codebase are the ones checking that a file is sti
 Interface text is design material. Name things by what the person controls, keep to sentence case,
 and make failure messages say what happened and what to do — never just that something went wrong.
 When a switch is disabled, the tooltip owes the reader a reason.
+
+## `swift test` and the Desktop
+
+If the test bundle fails to codesign with *"resource fork, Finder information, or similar detritus
+not allowed"*, the cause is `com.apple.provenance` — an extended attribute macOS adds to files in
+protected locations like `~/Desktop`, which `xattr -c` cannot remove. `swift build` is unaffected;
+only signing the `.xctest` bundle is. Build somewhere else:
+
+```bash
+swift test --scratch-path /tmp/skillswitch-build
+```

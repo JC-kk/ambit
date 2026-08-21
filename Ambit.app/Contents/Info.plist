@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>CFBundleName</key><string>Ambit</string>
+  <key>CFBundleDisplayName</key><string>Ambit</string>
+  <key>CFBundleExecutable</key><string>Ambit</string>
+  <key>CFBundleIdentifier</key><string>dev.ambit.Ambit</string>
+  <key>CFBundlePackageType</key><string>APPL</string>
+  <key>CFBundleShortVersionString</key><string>1.0.1</string>
+  <key>CFBundleVersion</key><string>1</string>
+  <key>CFBundleIconFile</key><string>AppIcon</string>
+  <key>CFBundleIconName</key><string>AppIcon</string>
+  <key>LSApplicationCategoryType</key><string>public.app-category.developer-tools</string>
+  <key>NSHumanReadableCopyright</key><string>Local capability control panel. No network access.</string>
+  <key>LSMinimumSystemVersion</key><string>26.0</string>
+  <!-- Menu bar utility: no Dock icon. The desktop panel switches the activation policy to
+       regular while it is open (see PanelPresenter) so it can take focus normally. -->
+  <key>LSUIElement</key><true/>
+  <key>NSHighResolutionCapable</key><true/>
+  <key>NSSupportsAutomaticTermination</key><true/>
+</dict>
+</plist>
