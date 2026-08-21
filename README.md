@@ -51,6 +51,8 @@ About 2,700 lines of logic and 1,400 of interface. It was written for exactly on
 If it happens to be yours as well, I would rather it got better: see
 [CONTRIBUTING.md](CONTRIBUTING.md).
 
+There is a second front end over the same library: a window at [JC-kk/skillswitch-tauri](https://github.com/JC-kk/skillswitch-tauri), with a context-load readout, presets and a skill store. This one is the menu bar app — for flipping switches without opening anything.
+
 ## Install
 
 Requires macOS 26.
