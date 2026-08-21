@@ -1,9 +1,8 @@
 cask "skillswitch" do
   version "2.0.0"
-  # This digest is the locally built dmg in dist/. If the release asset is built by CI instead,
-  # take the digest from that release's checksums.txt — hdiutil output is not reproducible, so the
-  # two will differ. See docs/RELEASING.md.
-  sha256 "8f73daf84cbb6e1f56f74fc6ca9f9f16e19fbb122bc3eee4560c23aac53ce79f"
+  # Taken from the v2.0.0 release's checksums.txt, not from a local build: hdiutil output is
+  # not reproducible, so the two differ. See docs/RELEASING.md.
+  sha256 "8280f457d4393d4c88a069316435dd7e4ce03e2907fdfcace70219a79655fbb1"
 
   url "https://github.com/JC-kk/skillswitch/releases/download/v#{version}/Skillswitch-#{version}.dmg"
   name "Skillswitch"
